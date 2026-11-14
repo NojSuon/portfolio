@@ -1,45 +1,177 @@
-# One [[project]] block per card, shown in this order.
-# Fields: name, summary, tags (used by the filter buttons), repo, live (optional),
-# featured (optional, true = wider card).
+# One [[project]] per sheet. Sheets are grouped by discipline and numbered in
+# the order they appear here: A-01, A-02… / T-01… / D-01…
+#
+#   slug        URL name: work/<slug>/ (a-z, 0-9 and - only)
+#   title       Project name
+#   discipline  "architecture", "tools" or "art"
+#   year        In quotes, e.g. "2026" or "2024–2026"
+#   kind        One short line: type, place, medium…
+#   summary     One or two sentences, shown under the title
+#   body        Longer text; separate paragraphs with a blank line (optional)
+#   facts       Extra rows for the title block (optional)
+#   links       Buttons to live sites, source, publications (optional)
+#   images      Files you put in static/, e.g. static/images/casa/1.jpg →
+#               src = "images/casa/1.jpg". The first one is the preview.
+#               Without images, a drawing is generated for the project.
+#   draft       true = shown only in the local preview, never on the live site
+
+# ─── Architecture ─────────────────────────────────────────────────────────────
+# Placeholders: replace them with your projects and remove `draft = true`.
 
 [[project]]
-name = "coniugatio"
-summary = "Learn about indigenous languages and conjugate their verbs. A Rust conjugation engine compiled to WebAssembly runs entirely in the browser."
-tags = ["Rust", "WebAssembly", "Languages"]
-repo = "https://github.com/NojSuon/coniugatio"
-live = "https://nojsuon.github.io/coniugatio/"
-featured = true
+slug = "architecture-project-one"
+title = "Architecture project one"
+discipline = "architecture"
+year = "2026"
+kind = "Housing · Location"
+summary = "Placeholder. One or two sentences about the idea behind the project."
+body = """
+Placeholder. Describe the site, the brief and the main moves of the design.
+
+A second paragraph can cover materials, structure, or how people use the building.
+"""
+facts = [
+  { label = "Status", value = "Competition / Built / Unbuilt" },
+  { label = "Area", value = "000 m²" },
+]
+draft = true
 
 [[project]]
-name = "Mati Mati"
-summary = "The main Mati Mati site: magazine, tools, about and contact, in Spanish, English and Chinese. Generated as static HTML by a small Rust program."
-tags = ["Rust", "Static site", "Languages"]
-repo = "https://github.com/NojSuon/matimati"
-live = "https://nojsuon.github.io/matimati/"
+slug = "architecture-project-two"
+title = "Architecture project two"
+discipline = "architecture"
+year = "2025"
+kind = "Public space · Location"
+summary = "Placeholder. One or two sentences about the idea behind the project."
+draft = true
+
+# ─── Tools & Software ─────────────────────────────────────────────────────────
 
 [[project]]
-name = "Chinamitl"
-summary = "An interactive low-poly 3D explorer of a chinampa, layer by layer, and of how thousands of them formed Mexiko-Tenochtitlan."
-tags = ["JavaScript", "three.js", "3D"]
-repo = "https://github.com/NojSuon/chinamitl"
-live = "https://nojsuon.github.io/chinamitl/"
-featured = true
+slug = "urbanitas"
+title = "Urbanitas"
+discipline = "tools"
+year = "2026"
+kind = "Procedural architecture · Rust"
+summary = "A generator and builder for landscapes, towns and houses, where architecture becomes a set of rules."
+body = """
+Urbanitas works at three scales. It generates terrain: hills, mountains, valleys, seas with beaches or cliffs, lakes and rivers. Click where the piazza goes and a town grows outwards along the contours, its houses facing the streets, each on its own terraced pad.
+
+Every house is generated from a few parameters (floors, size, type, rooms, plan shape and style) down to its archways, windows, balconies, roof and garden. Everything is made of modular parts, so any house can be edited piece by piece, saved as a design, and reused by the towns.
+"""
+facts = [
+  { label = "Built with", value = "Rust" },
+]
+links = [
+  { label = "Source", url = "https://github.com/NojSuon/urbanitas" },
+]
 
 [[project]]
-name = "Buul"
+slug = "coniugatio"
+title = "coniugatio"
+discipline = "tools"
+year = "2026"
+kind = "Language tool · Rust, WebAssembly"
+summary = "A site to learn about indigenous languages and conjugate their verbs, with the whole engine running in the browser."
+body = """
+The conjugation engine is written in Rust and handles clitics, root changes and plurals. Compiled to WebAssembly, it runs entirely in the browser, so the site is static and needs no server.
+
+Part of Mati Mati, a project about Mesoamerican languages and cultures.
+"""
+facts = [
+  { label = "Built with", value = "Rust, WebAssembly" },
+]
+links = [
+  { label = "Visit site", url = "https://nojsuon.github.io/coniugatio/" },
+  { label = "Source", url = "https://github.com/NojSuon/coniugatio" },
+]
+
+[[project]]
+slug = "chinamitl"
+title = "Chinamitl"
+discipline = "tools"
+year = "2026"
+kind = "Interactive 3D explorer · three.js"
+summary = "A low-poly explorer of a chinampa, layer by layer, and of how thousands of them formed the blocks of Mexiko-Tenochtitlan."
+body = """
+The chinampa can be opened into its nine layers (stakes, logs, tule, mud, soil) and read in an axonometric view, one layer at a time. Around it, the life of the lake: reeds, fish, axolotls, herons, and the volcanoes on the horizon.
+
+Available in Spanish, English and Chinese.
+"""
+facts = [
+  { label = "Built with", value = "JavaScript, three.js" },
+]
+links = [
+  { label = "Visit site", url = "https://nojsuon.github.io/chinamitl/" },
+  { label = "Source", url = "https://github.com/NojSuon/chinamitl" },
+]
+
+[[project]]
+slug = "buul"
+title = "Buul"
+discipline = "tools"
+year = "2026"
+kind = "Board game · TypeScript, React"
 summary = "A Mayan board game for the browser, with online play."
-tags = ["TypeScript", "React", "Games"]
-repo = "https://github.com/NojSuon/buul"
-live = "https://nojsuon.github.io/buul/"
+facts = [
+  { label = "Built with", value = "TypeScript, React, Firebase" },
+]
+links = [
+  { label = "Play", url = "https://nojsuon.github.io/buul/" },
+  { label = "Source", url = "https://github.com/NojSuon/buul" },
+]
 
 [[project]]
-name = "Urbanitas"
-summary = "A procedural architecture generator: landscapes, towns that grow from a piazza, and modular houses you can edit piece by piece in a 3D app."
-tags = ["Rust", "Procedural", "3D"]
-repo = "https://github.com/NojSuon/urbanitas"
+slug = "matimati"
+title = "Mati Mati"
+discipline = "tools"
+year = "2026"
+kind = "Publication & site generator · Rust"
+summary = "The home of Mati Mati: magazine, tools and contact in three languages, generated as static HTML by a small Rust program."
+facts = [
+  { label = "Built with", value = "Rust" },
+  { label = "Languages", value = "Spanish, English, Chinese" },
+]
+links = [
+  { label = "Visit site", url = "https://nojsuon.github.io/matimati/" },
+  { label = "Source", url = "https://github.com/NojSuon/matimati" },
+]
 
 [[project]]
-name = "Rust Terrain"
-summary = "A terrain you can walk around, built with the Bevy game engine."
-tags = ["Rust", "Bevy", "3D"]
-repo = "https://github.com/NojSuon/rust-terrain"
+slug = "rust-terrain"
+title = "Rust Terrain"
+discipline = "tools"
+year = "2026"
+kind = "Terrain study · Rust, Bevy"
+summary = "A walkable terrain built with the Bevy game engine."
+facts = [
+  { label = "Built with", value = "Rust, Bevy" },
+]
+links = [
+  { label = "Source", url = "https://github.com/NojSuon/rust-terrain" },
+]
+
+# ─── Arts & Design ────────────────────────────────────────────────────────────
+# Placeholders: replace them with your work and remove `draft = true`.
+
+[[project]]
+slug = "art-project-one"
+title = "Art project one"
+discipline = "art"
+year = "2026"
+kind = "Series · Medium"
+summary = "Placeholder. One or two sentences about the work."
+facts = [
+  { label = "Medium", value = "Ink on paper" },
+  { label = "Size", value = "00 × 00 cm" },
+]
+draft = true
+
+[[project]]
+slug = "design-project-one"
+title = "Design project one"
+discipline = "art"
+year = "2025"
+kind = "Identity · Client"
+summary = "Placeholder. One or two sentences about the brief and the result."
+draft = true

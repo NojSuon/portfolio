@@ -1,56 +1,65 @@
-// Theme toggle and project filters. The page works without this file;
-// it only adds the dark theme button and the technology filter.
+// Small touches on top of the static pages (all optional; the site works without them):
+// the Paper/Blueprint theme, the cursor coordinate readout, and the drawing
+// preview that follows the cursor over the index.
 
 (() => {
   const root = document.documentElement;
+  const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
 
-  // --- Theme --------------------------------------------------------------
+  // ── Theme: Paper ↔ Blueprint ────────────────────────────────────────────
   const toggle = document.querySelector(".theme-toggle");
-
-  function applyTheme(theme) {
-    root.dataset.theme = theme;
-    const next = theme === "dark" ? "light" : "dark";
-    toggle.setAttribute("aria-label", `Switch to ${next} theme`);
-    toggle.title = `Switch to ${next} theme`;
-  }
-
-  applyTheme(root.dataset.theme === "dark" ? "dark" : "light");
-
+  const setTheme = (blueprint) => {
+    if (blueprint) root.dataset.theme = "blueprint";
+    else delete root.dataset.theme;
+    toggle.setAttribute("aria-pressed", String(blueprint));
+  };
+  setTheme(root.dataset.theme === "blueprint");
   toggle.addEventListener("click", () => {
-    const theme = root.dataset.theme === "dark" ? "light" : "dark";
-    applyTheme(theme);
-    try { localStorage.setItem("theme", theme); } catch (e) { /* private mode */ }
+    const blueprint = root.dataset.theme !== "blueprint";
+    setTheme(blueprint);
+    try { localStorage.setItem("theme", blueprint ? "blueprint" : "paper"); } catch (e) { /* storage blocked */ }
   });
 
-  // --- Filters ------------------------------------------------------------
-  const cards = [...document.querySelectorAll(".card")];
-  const bar = document.querySelector(".filters");
+  // ── Cursor coordinates, in millimetres from the sheet's corner ──────────
+  const coords = document.querySelector(".coords");
+  const mm = (px) => String(Math.max(0, Math.round(px * 0.2646))).padStart(4, "0");
+  let px = 0, py = 0, cx = 0, cy = 0, frame = 0;
 
-  // Count tags and offer only those shared by two or more projects.
-  const counts = new Map();
-  for (const card of cards) {
-    for (const tag of card.dataset.tags.split("|")) {
-      counts.set(tag, (counts.get(tag) || 0) + 1);
+  // ── Drawing preview over index rows ─────────────────────────────────────
+  const preview = document.getElementById("preview");
+  const previews = fine && preview && matchMedia("(min-width: 901px)").matches;
+  if (previews) {
+    for (const li of document.querySelectorAll(".index li")) {
+      const link = li.querySelector("a.row");
+      const tpl = li.querySelector("template.preview");
+      if (!link || !tpl) continue;
+      link.addEventListener("pointerenter", () => {
+        preview.replaceChildren(tpl.content.cloneNode(true));
+        place();
+        preview.classList.add("on");
+      });
+      link.addEventListener("pointerleave", () => preview.classList.remove("on"));
     }
   }
-  const tags = [...counts].filter(([, n]) => n > 1).map(([t]) => t);
-  if (tags.length === 0) return;
 
-  const buttons = ["All", ...tags].map((tag) => {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.textContent = tag;
-    b.dataset.tag = tag;
-    b.setAttribute("aria-pressed", String(tag === "All"));
-    b.addEventListener("click", () => select(tag));
-    bar.append(b);
-    return b;
-  });
+  function place() {
+    const w = preview.offsetWidth, h = preview.offsetHeight, m = 24;
+    let x = cx + m, y = cy + m;
+    if (x + w > innerWidth - 16) x = cx - m - w;
+    if (y + h > innerHeight - 16) y = cy - m - h;
+    preview.style.transform = `translate(${x}px, ${y}px)`;
+  }
 
-  function select(tag) {
-    for (const b of buttons) b.setAttribute("aria-pressed", String(b.dataset.tag === tag));
-    for (const card of cards) {
-      card.hidden = tag !== "All" && !card.dataset.tags.split("|").includes(tag);
-    }
+  function tick() {
+    frame = 0;
+    if (coords) coords.textContent = `X ${mm(px)} · Y ${mm(py)}`;
+    if (previews) place();
+  }
+
+  if (fine) {
+    addEventListener("pointermove", (e) => {
+      px = e.pageX; py = e.pageY; cx = e.clientX; cy = e.clientY;
+      if (!frame) frame = requestAnimationFrame(tick);
+    }, { passive: true });
   }
 })();

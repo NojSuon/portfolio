@@ -1,35 +1,43 @@
 # Noj Suon · Portfolio
 
-My portfolio site. Once deployed it lives at https://nojsuon.github.io/portfolio/.
+Personal portfolio for architecture, tools & software, and arts & design, laid out as a set of drawing sheets. Live at https://nojsuon.github.io/portfolio/.
+
+Every project is a numbered sheet: **A-01…** Architecture, **T-01…** Tools & Software, **D-01…** Arts & Design. The index lists them like a drawing register. Each project gets its own page with a title block of facts, figures and text.
 
 ## How it works
 
-- **Rust** (`src/main.rs`) reads the content and writes the static site to `dist/`.
-- **JavaScript** (`static/main.js`) adds the light/dark theme button and the technology filter on the project cards. The page still works without it.
+- **Rust** (`src/`) reads the content and writes the static site to `dist/`: the index and one page per project at `work/<slug>/`. Projects without images get a generated line drawing (`src/plate.rs`), always the same one for the same project.
+- **JavaScript** (`static/main.js`) adds the Paper/Blueprint theme switch, the cursor coordinate readout, and the drawing preview that follows the cursor over the index. The site works without it.
 
 | Folder / file | What it holds |
 |---|---|
-| `content/site.toml` | Name, tagline, about text, GitHub link |
-| `content/projects.toml` | One `[[project]]` block per card |
-| `static/` | `style.css`, `main.js` and anything else copied as-is into `dist/` |
+| `content/site.toml` | Name, statement, about text, contact and links |
+| `content/projects.toml` | One `[[project]]` per sheet; the comments at the top list every field |
+| `static/` | `style.css`, `main.js`, and your images (e.g. `static/images/<slug>/1.jpg`) |
 | `.github/workflows/pages.yml` | Tests, builds and deploys to GitHub Pages on every push to `main` |
 
-## Build and preview
+## Adding a project
 
-Build `dist/`:
+1. Add a `[[project]]` block to `content/projects.toml` with `discipline = "architecture"`, `"tools"` or `"art"`.
+2. Put its images in `static/images/<slug>/` and list them under `images`. The first one is the preview on the index.
+3. Keep `draft = true` while you work on it: drafts show in the local preview, never on the live site.
 
-```bash
-cargo run
-```
+## Preview and build
 
-Build and preview at http://localhost:8080/ (a tiny built-in server, no extra tools needed):
+Build with drafts and preview at http://localhost:8080/:
 
 ```bash
 cargo run -- --serve
 ```
 
-Run the tests with `cargo test`.
+Build the public site (drafts left out), as the deploy does:
 
-## Deploying
+```bash
+cargo run
+```
 
-One-time setup on GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**. After that, every push to `main` publishes the site.
+Run the tests:
+
+```bash
+cargo test
+```
