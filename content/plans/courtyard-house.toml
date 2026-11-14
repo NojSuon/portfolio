@@ -1,0 +1,107 @@
+# Single-storey courtyard house: a U of three wings around a paved court
+# that opens to the garden. See README.md for the format.
+
+[[level]]
+name = "Ground floor"
+outline = [[0, 0], [15000, 0], [15000, 12000], [10000, 12000], [10000, 4500], [5000, 4500], [5000, 12000], [0, 12000]]
+xdims = [0, 3600, 5000, 10000, 11400, 15000]
+ydims = [0, 4500, 7000, 9500, 12000]
+
+partitions = [
+  # Kitchen / living
+  [5000, 0, 5000, 1500],
+  [5000, 3200, 5000, 4500],
+  # West wing: bedrooms off a glazed gallery
+  [0, 4500, 3600, 4500],
+  [3600, 4500, 3600, 12000],
+  [0, 7000, 3600, 7000],
+  [0, 9500, 3600, 9500],
+  # East wing: study, ensuite, main bedroom
+  [11400, 4500, 15000, 4500],
+  [11400, 4500, 11400, 9000],
+  [11400, 7000, 15000, 7000],
+  [10000, 9000, 15000, 9000],
+]
+
+# Low garden wall closing the court, with a gate.
+walls = [[5000, 12000, 7000, 12000, 200], [8200, 12000, 10000, 12000, 200]]
+
+doors = [
+  { at = [6200, 0], w = 1000, run = "E", swing = "S" },
+  { at = [3600, 4900], w = 800, run = "S", swing = "W" },
+  { at = [3600, 7400], w = 900, run = "S", swing = "W" },
+  { at = [3600, 9900], w = 900, run = "S", swing = "W" },
+  { at = [11400, 5000], w = 900, run = "S", swing = "E" },
+  { at = [10200, 9000], w = 900, run = "E", swing = "S" },
+  { at = [13000, 9000], w = 800, run = "E", swing = "N" },
+  { at = [5600, 4500], w = 3800, run = "E", style = "slide" },
+]
+
+windows = [
+  { at = [1200, 0], w = 2000, run = "E" },
+  { at = [0, 1200], w = 1500, run = "S" },
+  { at = [10500, 0], w = 3000, run = "E" },
+  { at = [15000, 1000], w = 2500, run = "S" },
+  { at = [0, 5200], w = 1000, run = "S" },
+  { at = [0, 7600], w = 1400, run = "S" },
+  { at = [0, 10100], w = 1400, run = "S" },
+  { at = [800, 12000], w = 1600, run = "E" },
+  { at = [3900, 12000], w = 800, run = "E" },
+  { at = [5000, 5000], w = 3000, run = "S" },
+  { at = [5000, 8600], w = 3000, run = "S" },
+  { at = [10000, 5000], w = 3500, run = "S" },
+  { at = [15000, 5000], w = 1500, run = "S" },
+  { at = [15000, 7600], w = 800, run = "S" },
+  { at = [15000, 9800], w = 1500, run = "S" },
+  { at = [11000, 12000], w = 2800, run = "E" },
+]
+
+entries = [{ at = [6700, -450], dir = "S" }, { at = [7600, 12500], dir = "N" }]
+
+rooms = [
+  { name = "Kitchen", rect = [0, 0, 5000, 4500], at = [2500, 3900], floor = "tile" },
+  { name = "Living / Dining", rect = [5000, 0, 10000, 4500], at = [9800, 3800], floor = "timber" },
+  { name = "Bath", rect = [0, 4500, 3600, 2500], at = [1700, 5700], floor = "tile" },
+  { name = "Bedroom 2", kind = "Bedroom", rect = [0, 7000, 3600, 2500], at = [2900, 8950] },
+  { name = "Bedroom 3", kind = "Bedroom", rect = [0, 9500, 3600, 2500], at = [2900, 11450] },
+  { name = "Gallery", rects = [[3600, 4500, 1400, 7500]], at = [4300, 8300] },
+  { name = "Study", rect = [11400, 4500, 3600, 2500], at = [13000, 6300] },
+  { name = "Ensuite", rect = [11400, 7000, 3600, 2000], at = [12550, 7850], floor = "tile" },
+  { name = "Main bedroom", rect = [10000, 9000, 5000, 3000], at = [11700, 11300], floor = "timber" },
+  { name = "Corridor", rect = [10000, 4500, 1400, 4500], style = "none" },
+  { name = "Courtyard", rect = [5000, 4500, 5000, 7500], at = [7500, 10600], floor = "paving", outdoor = true },
+]
+
+furniture = [
+  # Kitchen
+  { kind = "counter", rect = [150, 150, 4000, 600] },
+  { kind = "sink", rect = [1700, 200, 900, 500] },
+  { kind = "counter", rect = [150, 750, 600, 2600], side = "W" },
+  { kind = "hob", rect = [200, 1700, 500, 700], side = "W" },
+  { kind = "counter", rect = [1900, 1900, 2200, 900], side = "S" },
+  # Living / dining
+  { kind = "table", rect = [6200, 1800, 2200, 1000] },
+  { kind = "sofa", rect = [13950, 1100, 900, 2400], side = "E" },
+  { kind = "table", rect = [12500, 1700, 700, 1200], seats = 0 },
+  { kind = "chair", rect = [11200, 1200, 800, 800], side = "W" },
+  { kind = "chair", rect = [11200, 2600, 800, 800], side = "W" },
+  { kind = "shelf", rect = [9500, 150, 800, 450] },
+  # West wing
+  { kind = "bath", rect = [150, 4560, 1700, 750] },
+  { kind = "wc", rect = [150, 6000, 650, 400], side = "W" },
+  { kind = "basin", rect = [1500, 6490, 550, 450], side = "S" },
+  { kind = "bed", rect = [150, 7550, 2000, 1400], side = "W" },
+  { kind = "bed", rect = [150, 9950, 2000, 1400], side = "W" },
+  { kind = "plant", rect = [4000, 11000, 600, 600] },
+  # East wing
+  { kind = "desk", rect = [14250, 5000, 600, 1400], side = "E" },
+  { kind = "shelf", rect = [12400, 4560, 2400, 400] },
+  { kind = "shower", rect = [13850, 7060, 1000, 1000] },
+  { kind = "wc", rect = [11600, 8290, 400, 650], side = "S" },
+  { kind = "basin", rect = [12100, 7060, 600, 450] },
+  { kind = "bed", rect = [12850, 9900, 2000, 1600], side = "E" },
+  { kind = "wardrobe", rect = [10150, 10000, 600, 1800], side = "W" },
+  # Courtyard
+  { kind = "tree", rect = [6000, 6000, 2200, 2200] },
+  { kind = "round", rect = [7900, 8600, 900, 900], seats = 3 },
+]

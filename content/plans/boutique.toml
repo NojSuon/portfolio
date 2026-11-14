@@ -1,0 +1,71 @@
+# Corner boutique: sales floor behind two glazed street fronts, with stock,
+# office, staff WC and fitting rooms along the back. See README.md for the format.
+
+[[level]]
+name = "Ground floor"
+outline = [[0, 0], [12000, 0], [12000, 9000], [0, 9000]]
+xdims = [0, 3800, 5600, 7400, 8900, 10400, 12000]
+ydims = [0, 1800, 3000, 9000]
+
+partitions = [
+  [0, 3000, 7400, 3000],
+  [3800, 0, 3800, 3000],
+  [5600, 0, 5600, 3000],
+  [7400, 0, 7400, 3000],
+  [8900, 0, 8900, 1800],
+  [10400, 0, 10400, 1800],
+]
+
+doors = [
+  { at = [7800, 9000], w = 1800, run = "E", swing = "N", style = "double" },
+  { at = [1600, 3000], w = 1000, run = "E", swing = "N" },
+  { at = [4200, 3000], w = 900, run = "E", swing = "N" },
+  { at = [5900, 3000], w = 900, run = "E", swing = "N" },
+]
+
+windows = [
+  { at = [500, 9000], w = 3000, run = "E" },
+  { at = [3800, 9000], w = 3200, run = "E" },
+  { at = [10000, 9000], w = 1600, run = "E" },
+  { at = [12000, 2400], w = 2600, run = "S" },
+  { at = [12000, 5600], w = 2800, run = "S" },
+  { at = [4300, 0], w = 900, run = "E" },
+]
+
+entries = [{ at = [8700, 9400], dir = "N" }]
+
+rooms = [
+  { name = "Sales floor", rects = [[0, 3000, 12000, 6000], [7400, 1800, 4600, 1200], [10400, 0, 1600, 1800]], at = [7300, 5900], floor = "timber" },
+  { name = "Stock", rect = [0, 0, 3800, 3000], at = [2200, 1700] },
+  { name = "Office", rect = [3800, 0, 1800, 3000], at = [4700, 1650] },
+  { name = "WC", rect = [5600, 0, 1800, 3000], at = [6200, 1500], floor = "tile" },
+  { name = "Fitting 1", kind = "Fitting room", rect = [7400, 0, 1500, 1800], at = [8150, 1000] },
+  { name = "Fitting 2", kind = "Fitting room", rect = [8900, 0, 1500, 1800], at = [9650, 1000] },
+]
+
+furniture = [
+  # Stock and office
+  { kind = "shelf", rect = [300, 150, 3300, 500] },
+  { kind = "shelf", rect = [150, 800, 500, 2000] },
+  { kind = "desk", rect = [4000, 150, 1400, 650] },
+  # WC
+  { kind = "wc", rect = [5800, 150, 400, 650] },
+  { kind = "basin", rect = [6880, 900, 460, 550], side = "E" },
+  # Fitting rooms
+  { kind = "shelf", rect = [7500, 150, 1300, 350] },
+  { kind = "shelf", rect = [9000, 150, 1300, 350] },
+  { kind = "curtain", rect = [7460, 1700, 1380, 200] },
+  { kind = "curtain", rect = [8960, 1700, 1380, 200] },
+  # Sales floor
+  { kind = "shelf", rect = [150, 3500, 500, 5000] },
+  { kind = "display", rect = [1600, 4300, 1800, 1000] },
+  { kind = "display", rect = [1600, 6600, 1800, 1000] },
+  { kind = "display", rect = [4400, 4300, 1800, 1000] },
+  { kind = "display", rect = [4400, 6600, 1800, 1000] },
+  { kind = "counter", rect = [8400, 3400, 2600, 700] },
+  { kind = "rack", rect = [8300, 5500, 2400, 500] },
+  { kind = "rack", rect = [8300, 6700, 2400, 500] },
+  { kind = "chair", rect = [11000, 4600, 700, 700], side = "E" },
+  { kind = "plant", rect = [11250, 8200, 550, 550] },
+  { kind = "plant", rect = [10600, 600, 600, 600] },
+]

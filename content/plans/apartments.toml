@@ -1,0 +1,144 @@
+# Typical floor of an apartment building: four flats around a central stair
+# and lift. The west flats are drawn once and mirrored to the east
+# (`mirror_x`). See README.md for the format.
+
+[[level]]
+name = "Typical floor"
+outline = [[0, 0], [28000, 0], [28000, 14000], [0, 14000]]
+xdims = [0, 5600, 9000, 11600, 14000, 16400, 19000, 22400, 28000]
+ydims = [0, 3800, 6000, 8000, 10200, 14000]
+
+# Core: stair, lift, bins and riser, and the corridor.
+partitions = [
+  [14000, 0, 14000, 6000, 200],
+  [14000, 3600, 16400, 3600, 200],
+  [11600, 6000, 16400, 6000, 200],
+]
+doors = [
+  { at = [12000, 6000], w = 1000, run = "E", swing = "N" },
+  { at = [14600, 6000], w = 1100, run = "E", style = "slide" },
+  { at = [14000, 500], w = 800, run = "S", swing = "E" },
+]
+windows = [{ at = [12200, 0], w = 1200, run = "E" }]
+stairs = [{ rect = [11750, 300, 2150, 4500], dir = "N", steps = 9, kind = "u" }]
+furniture = [{ kind = "lift", rect = [14250, 3800, 1900, 2000] }]
+rooms = [
+  { name = "Stair", rect = [11600, 0, 2400, 6000], style = "none" },
+  { name = "Lift", rect = [14000, 3600, 2400, 2400], style = "none", list = false },
+  { name = "Riser", rect = [14000, 0, 2400, 3600], at = [15200, 1800] },
+  { name = "Corridor", rect = [8000, 6000, 12000, 2000], at = [14000, 7000] },
+]
+
+# Flats A and B: two bedrooms, facing north.
+[[level.group]]
+mirror_x = 14000
+start = 1
+partitions = [
+  [5600, 0, 5600, 6000],
+  [9000, 0, 9000, 3800],
+  [5600, 3800, 11600, 3800],
+  [9800, 3800, 9800, 6000],
+  [11600, 0, 11600, 6000, 200],
+  [0, 6000, 8000, 6000, 200],
+  [8000, 6000, 11600, 6000, 200],
+]
+doors = [
+  { at = [8300, 6000], w = 1000, run = "E", swing = "N" },
+  { at = [6000, 3800], w = 900, run = "E", swing = "N" },
+  { at = [9100, 3800], w = 800, run = "E", swing = "N" },
+  { at = [9800, 4200], w = 750, run = "S", swing = "E" },
+  { at = [5600, 4300], w = 900, run = "S", swing = "W" },
+]
+windows = [
+  { at = [800, 0], w = 3200, run = "E" },
+  { at = [0, 1000], w = 2000, run = "S" },
+  { at = [6600, 0], w = 1600, run = "E" },
+  { at = [9700, 0], w = 1200, run = "E" },
+]
+entries = [{ at = [8800, 6750], dir = "N" }]
+rooms = [
+  { name = "Flat {a} · 2-bed", kind = "Flat, 2 bedrooms", rect = [0, 0, 11600, 6000], at = [7650, 4750], style = "tag" },
+  { name = "Living", rect = [0, 0, 5600, 6000], at = [3400, 2600], list = false, floor = "timber" },
+  { name = "Bedroom", rect = [5600, 0, 3400, 3800], at = [7300, 2900], list = false },
+  { name = "Bedroom", rect = [9000, 0, 2600, 3800], at = [10300, 2500], list = false },
+  { name = "Bath", rect = [9800, 3800, 1800, 2200], list = false, style = "none", floor = "tile" },
+  { name = "Hall", rect = [5600, 3800, 4200, 2200], list = false, style = "none" },
+]
+furniture = [
+  { kind = "counter", rect = [150, 5300, 3600, 600], side = "S" },
+  { kind = "sink", rect = [800, 5350, 900, 500], side = "S" },
+  { kind = "hob", rect = [2700, 5350, 600, 500], side = "S" },
+  { kind = "table", rect = [600, 3300, 1800, 900] },
+  { kind = "sofa", rect = [150, 600, 900, 2200], side = "W" },
+  { kind = "table", rect = [1500, 1100, 600, 1200], seats = 0 },
+  { kind = "chair", rect = [3100, 1300, 800, 800], side = "E" },
+  { kind = "bed", rect = [5660, 800, 2000, 1600], side = "W" },
+  { kind = "wardrobe", rect = [8340, 700, 600, 1800], side = "E" },
+  { kind = "bed", rect = [9440, 700, 2000, 900], side = "E" },
+  { kind = "bath", rect = [9880, 5150, 1560, 750], side = "S" },
+  { kind = "wc", rect = [10900, 3860, 400, 650] },
+  { kind = "wardrobe", rect = [6000, 5400, 1600, 450], side = "S" },
+]
+
+# Flats C and D: three bedrooms, facing south.
+[[level.group]]
+mirror_x = 14000
+start = 3
+partitions = [
+  [4600, 6000, 4600, 10200],
+  [4600, 8000, 8000, 8000],
+  [0, 10200, 14000, 10200],
+  [7000, 10200, 7000, 14000],
+  [10200, 10200, 10200, 14000],
+  [11200, 8000, 11200, 10200],
+  [8000, 6000, 8000, 8000, 200],
+  [8000, 8000, 14000, 8000, 200],
+  [14000, 8000, 14000, 14000, 200],
+]
+doors = [
+  { at = [9000, 8000], w = 1000, run = "E", swing = "S" },
+  { at = [4600, 8500], w = 900, run = "S", swing = "W" },
+  { at = [4600, 6400], w = 800, run = "S", swing = "E" },
+  { at = [5400, 10200], w = 900, run = "E", swing = "S" },
+  { at = [7300, 10200], w = 900, run = "E", swing = "S" },
+  { at = [10300, 10200], w = 800, run = "E", swing = "S" },
+  { at = [11200, 8300], w = 800, run = "S", swing = "E" },
+]
+windows = [
+  { at = [0, 7000], w = 2000, run = "S" },
+  { at = [0, 11000], w = 2000, run = "S" },
+  { at = [1500, 14000], w = 3600, run = "E" },
+  { at = [7800, 14000], w = 1600, run = "E" },
+  { at = [11300, 14000], w = 1600, run = "E" },
+]
+entries = [{ at = [9500, 7250], dir = "S" }]
+rooms = [
+  { name = "Flat {a} · 3-bed", kind = "Flat, 3 bedrooms", rects = [[0, 8000, 14000, 6000], [0, 6000, 8000, 2000]], at = [7000, 9150], style = "tag" },
+  { name = "Living", rect = [0, 10200, 7000, 3800], at = [2000, 13300], list = false, floor = "timber" },
+  { name = "Bedroom", rect = [0, 6000, 4600, 4200], at = [2300, 8800], list = false },
+  { name = "Ensuite", rect = [4600, 6000, 3400, 2000], list = false, style = "none", floor = "tile" },
+  { name = "Bedroom", rect = [7000, 10200, 3200, 3800], at = [8600, 13300], list = false },
+  { name = "Bedroom", rect = [10200, 10200, 3800, 3800], at = [12100, 13300], list = false },
+  { name = "Bath", rect = [11200, 8000, 2800, 2200], list = false, style = "none", floor = "tile" },
+  { name = "Hall", rect = [4600, 8000, 6600, 2200], list = false, style = "none" },
+]
+furniture = [
+  { kind = "bed", rect = [1300, 6100, 1600, 2000] },
+  { kind = "wardrobe", rect = [700, 9540, 2400, 600], side = "S" },
+  { kind = "shower", rect = [6900, 6100, 1000, 1000] },
+  { kind = "wc", rect = [5600, 6100, 400, 650] },
+  { kind = "basin", rect = [6200, 7490, 600, 450], side = "S" },
+  { kind = "counter", rect = [150, 10260, 3800, 600] },
+  { kind = "sink", rect = [800, 10310, 900, 500] },
+  { kind = "hob", rect = [2700, 10310, 600, 500] },
+  { kind = "table", rect = [800, 11650, 1800, 900] },
+  { kind = "sofa", rect = [3800, 12950, 2400, 900], side = "S" },
+  { kind = "table", rect = [4500, 11900, 1200, 600], seats = 0 },
+  { kind = "bed", rect = [8140, 11400, 2000, 1600], side = "E" },
+  { kind = "wardrobe", rect = [7060, 11300, 600, 1800], side = "W" },
+  { kind = "bed", rect = [11800, 11300, 2000, 1600], side = "E" },
+  { kind = "desk", rect = [10260, 12400, 600, 1200], side = "W" },
+  { kind = "bath", rect = [13150, 8100, 750, 1700], side = "E" },
+  { kind = "wc", rect = [12300, 9490, 400, 650], side = "S" },
+  { kind = "basin", rect = [12200, 8100, 550, 450] },
+]
