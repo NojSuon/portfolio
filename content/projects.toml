@@ -1,0 +1,45 @@
+# One [[project]] block per card, shown in this order.
+# Fields: name, summary, tags (used by the filter buttons), repo, live (optional),
+# featured (optional, true = wider card).
+
+[[project]]
+name = "coniugatio"
+summary = "Learn about indigenous languages and conjugate their verbs. A Rust conjugation engine compiled to WebAssembly runs entirely in the browser."
+tags = ["Rust", "WebAssembly", "Languages"]
+repo = "https://github.com/NojSuon/coniugatio"
+live = "https://nojsuon.github.io/coniugatio/"
+featured = true
+
+[[project]]
+name = "Mati Mati"
+summary = "The main Mati Mati site: magazine, tools, about and contact, in Spanish, English and Chinese. Generated as static HTML by a small Rust program."
+tags = ["Rust", "Static site", "Languages"]
+repo = "https://github.com/NojSuon/matimati"
+live = "https://nojsuon.github.io/matimati/"
+
+[[project]]
+name = "Chinamitl"
+summary = "An interactive low-poly 3D explorer of a chinampa, layer by layer, and of how thousands of them formed Mexiko-Tenochtitlan."
+tags = ["JavaScript", "three.js", "3D"]
+repo = "https://github.com/NojSuon/chinamitl"
+live = "https://nojsuon.github.io/chinamitl/"
+featured = true
+
+[[project]]
+name = "Buul"
+summary = "A Mayan board game for the browser, with online play."
+tags = ["TypeScript", "React", "Games"]
+repo = "https://github.com/NojSuon/buul"
+live = "https://nojsuon.github.io/buul/"
+
+[[project]]
+name = "Urbanitas"
+summary = "A procedural architecture generator: landscapes, towns that grow from a piazza, and modular houses you can edit piece by piece in a 3D app."
+tags = ["Rust", "Procedural", "3D"]
+repo = "https://github.com/NojSuon/urbanitas"
+
+[[project]]
+name = "Rust Terrain"
+summary = "A terrain you can walk around, built with the Bevy game engine."
+tags = ["Rust", "Bevy", "3D"]
+repo = "https://github.com/NojSuon/rust-terrain"

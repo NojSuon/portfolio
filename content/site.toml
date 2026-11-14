@@ -1,0 +1,11 @@
+# Site-wide text. Edit freely, then run `cargo run` to rebuild dist/.
+
+name = "Noj Suon"
+title = "Noj Suon · Portfolio"
+tagline = "I build tools for learning languages, interactive 3D places, and procedural worlds, mostly in Rust and JavaScript."
+about = """
+I make things for the web and the desktop: language tools that run Rust in the browser through WebAssembly, \
+low-poly 3D explorers in three.js, a board game with online play, and generators that grow terrain, towns and houses. \
+Much of this work belongs to Mati Mati, a project about Mesoamerican languages and cultures.\
+"""
+github = "https://github.com/NojSuon"
