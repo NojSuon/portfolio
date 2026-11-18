@@ -1,0 +1,95 @@
+# Hotel, typical guest floor: twenty rooms on a double-loaded corridor with
+# lifts, two stairs and a linen room in the middle. One room is drawn,
+# repeated five times on each side of the core and mirrored across the
+# corridor. See README.md for the format.
+
+[[level]]
+name = "Typical guest floor"
+outline = [[0, 0], [45600, 0], [45600, 16200], [0, 16200]]
+xdims = [0, 3800, 7600, 11400, 15200, 19000, 26600, 30400, 34200, 38000, 41800, 45600]
+ydims = [0, 4800, 7200, 9000, 11400, 16200]
+
+partitions = [
+  # Lifts
+  [19000, 2600, 26600, 2600, 200],
+  [21533, 0, 21533, 2600, 200],
+  [24066, 0, 24066, 2600, 200],
+  # Stairs and linen room
+  [19000, 9000, 26600, 9000, 200],
+  [21800, 9000, 21800, 16200, 200],
+  [23800, 9000, 23800, 16200, 200],
+]
+
+doors = [
+  { at = [19700, 2600], w = 1100, run = "E", style = "slide" },
+  { at = [22250, 2600], w = 1100, run = "E", style = "slide" },
+  { at = [24800, 2600], w = 1100, run = "E", style = "slide" },
+  { at = [19400, 9000], w = 1000, run = "E", swing = "S" },
+  { at = [22300, 9000], w = 900, run = "E", swing = "S" },
+  { at = [26200, 9000], w = 1000, run = "W", swing = "S" },
+]
+
+windows = [
+  { at = [0, 7400], w = 1400, run = "S" },
+  { at = [45600, 7400], w = 1400, run = "S" },
+  { at = [19800, 16200], w = 1200, run = "E" },
+  { at = [24600, 16200], w = 1200, run = "E" },
+]
+
+stairs = [
+  { rect = [19200, 10300, 2450, 5700], dir = "S", steps = 9, kind = "u" },
+  { rect = [23950, 10300, 2450, 5700], dir = "S", steps = 9, kind = "u", left = true },
+]
+
+rooms = [
+  { name = "Lift lobby", rect = [19000, 2600, 7600, 4600], at = [22800, 4900] },
+  { name = "Corridor", rect = [0, 7200, 45600, 1800], at = [22800, 8100] },
+  { name = "Linen", rect = [21800, 9000, 2000, 7200], at = [22800, 10350] },
+  { name = "Stair 1", kind = "Stair", rect = [19000, 9000, 2800, 7200], style = "none" },
+  { name = "Stair 2", kind = "Stair", rect = [23800, 9000, 2800, 7200], style = "none" },
+  { name = "Lifts", rect = [19000, 0, 7600, 2600], style = "none", list = false },
+]
+
+furniture = [
+  { kind = "lift", rect = [19250, 250, 2100, 2200] },
+  { kind = "lift", rect = [21783, 250, 2100, 2200] },
+  { kind = "lift", rect = [24316, 250, 2100, 2200] },
+  { kind = "sofa", rect = [19150, 3600, 900, 2000], side = "W" },
+  { kind = "sofa", rect = [25550, 3600, 900, 2000], side = "E" },
+  { kind = "plant", rect = [22500, 3200, 600, 600] },
+  { kind = "shelf", rect = [21960, 10700, 500, 5000], side = "W" },
+  { kind = "shelf", rect = [23140, 10700, 500, 5000], side = "E" },
+]
+
+# The guest room: drawn once, five times each side of the core, both sides
+# of the corridor. Numbered 101–120.
+[[level.group]]
+origins = [[0, 0], [26600, 0]]
+repeat = [5, 3800, 0]
+mirror_y = 8100
+start = 101
+partitions = [
+  [0, 0, 0, 7200, 200],
+  [3800, 0, 3800, 7200, 200],
+  [0, 7200, 3800, 7200, 200],
+  [2000, 4800, 2000, 7200],
+  [0, 4800, 2000, 4800],
+]
+doors = [
+  { at = [2200, 7200], w = 900, run = "E", swing = "N" },
+  { at = [2000, 5200], w = 750, run = "S", swing = "W" },
+]
+windows = [{ at = [800, 0], w = 2200, run = "E" }]
+rooms = [
+  { name = "{n}", kind = "Guest room", rect = [0, 0, 3800, 7200], at = [1900, 4050] },
+  { name = "Bath", rect = [0, 4800, 2000, 2400], style = "none", list = false, floor = "tile" },
+]
+furniture = [
+  { kind = "bed", rect = [100, 1400, 2000, 1800], side = "W" },
+  { kind = "desk", rect = [3100, 500, 600, 1300], side = "E" },
+  { kind = "chair", rect = [2900, 2900, 750, 750], side = "E" },
+  { kind = "wardrobe", rect = [3200, 4900, 500, 1300], side = "E" },
+  { kind = "shower", rect = [100, 4860, 1000, 1000] },
+  { kind = "wc", rect = [100, 6100, 650, 400], side = "W" },
+  { kind = "basin", rect = [1100, 6650, 550, 450], side = "S" },
+]

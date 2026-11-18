@@ -10,6 +10,7 @@
 //! All links are relative, so the site works at a domain root and under
 //! GitHub Pages' `/portfolio/` alike.
 
+mod floorplan;
 mod plate;
 
 use serde::Deserialize;
@@ -50,16 +51,18 @@ struct Link {
 #[serde(rename_all = "lowercase")]
 enum Discipline {
     Architecture,
+    Plans,
     Tools,
     Art,
 }
 
 impl Discipline {
-    const ALL: [Discipline; 3] = [Discipline::Architecture, Discipline::Tools, Discipline::Art];
+    const ALL: [Discipline; 4] = [Discipline::Architecture, Discipline::Plans, Discipline::Tools, Discipline::Art];
 
     fn letter(self) -> &'static str {
         match self {
             Discipline::Architecture => "A",
+            Discipline::Plans => "F",
             Discipline::Tools => "T",
             Discipline::Art => "D",
         }
@@ -68,6 +71,7 @@ impl Discipline {
     fn name(self) -> &'static str {
         match self {
             Discipline::Architecture => "Architecture",
+            Discipline::Plans => "Floor Plans",
             Discipline::Tools => "Tools & Software",
             Discipline::Art => "Arts & Design",
         }
@@ -76,6 +80,7 @@ impl Discipline {
     fn id(self) -> &'static str {
         match self {
             Discipline::Architecture => "architecture",
+            Discipline::Plans => "plans",
             Discipline::Tools => "tools",
             Discipline::Art => "art",
         }
@@ -111,6 +116,9 @@ struct Project {
     links: Vec<Link>,
     #[serde(default)]
     images: Vec<Image>,
+    /// A drawing from `content/plans/<plan>.toml`.
+    #[serde(default)]
+    plan: Option<String>,
     #[serde(default)]
     draft: bool,
 }
@@ -125,6 +133,7 @@ struct Projects {
 struct Sheet<'a> {
     p: &'a Project,
     code: String,
+    plan: Option<floorplan::Drawing>,
 }
 
 // ---------------------------------------------------------------- helpers ---
@@ -179,10 +188,23 @@ fn sheets(projects: &[Project]) -> Vec<Sheet<'_>> {
     let mut out = Vec::new();
     for d in Discipline::ALL {
         for (i, p) in projects.iter().filter(|p| p.discipline == d).enumerate() {
-            out.push(Sheet { p, code: format!("{}-{:02}", d.letter(), i + 1) });
+            out.push(Sheet { p, code: format!("{}-{:02}", d.letter(), i + 1), plan: None });
         }
     }
     out
+}
+
+/// Draws the floor plans of the sheets that have one.
+fn attach_plans(all: &mut [Sheet]) -> Res<()> {
+    for s in all.iter_mut() {
+        if let Some(name) = &s.p.plan {
+            if !valid_slug(name) {
+                return Err(format!("project {:?}: plan {name:?} must use only a-z, 0-9 and -", s.p.slug).into());
+            }
+            s.plan = Some(floorplan::load(name, &s.p.slug)?);
+        }
+    }
+    Ok(())
 }
 
 fn validate(projects: &[Project]) -> Res<()> {
@@ -208,8 +230,11 @@ fn validate(projects: &[Project]) -> Res<()> {
 
 // -------------------------------------------------------------- rendering ---
 
-/// The first image, or the generated drawing.
+/// The floor plan, the first image, or the generated drawing.
 fn figure(s: &Sheet, root: &str) -> String {
+    if let Some(plan) = &s.plan {
+        return plan.svg.clone();
+    }
     match s.p.images.first() {
         Some(img) => format!(r#"<img src="{root}{}" alt="">"#, esc(&img.src)),
         None => plate::plate(&s.p.slug, &s.code),
@@ -386,6 +411,11 @@ fn render_sheet(site: &Site, all: &[Sheet], i: usize) -> String {
     for f in &p.facts {
         facts.push_str(&format!("<dt>{}</dt><dd>{}</dd>", esc(&f.label), esc(&f.value)));
     }
+    if let Some(plan) = &s.plan {
+        for (k, v) in &plan.facts {
+            facts.push_str(&format!(r#"<dt>{}</dt><dd class="mono">{}</dd>"#, esc(k), esc(v)));
+        }
+    }
     if !p.links.is_empty() {
         let links: String = p
             .links
@@ -396,7 +426,16 @@ fn render_sheet(site: &Site, all: &[Sheet], i: usize) -> String {
         facts.push_str(&format!("<dt>Links</dt><dd>{links}</dd>"));
     }
 
-    let plates: String = if p.images.is_empty() {
+    let mut plates = String::new();
+    if let Some(plan) = &s.plan {
+        plates.push_str(&format!(
+            r#"<figure class="fig plan-fig">{}<figcaption class="mono">Fig. 1 — Floor plan</figcaption></figure>{}"#,
+            plan.svg, plan.schedule
+        ));
+    }
+    plates += &if s.plan.is_some() {
+        String::new()
+    } else if p.images.is_empty() {
         format!(r#"<figure class="fig schematic">{}<figcaption class="mono">Fig. 1 — Schematic</figcaption></figure>"#, figure(s, root))
     } else {
         p.images
@@ -481,7 +520,8 @@ fn build(include_drafts: bool) -> Res<()> {
     if !include_drafts {
         projects.project.retain(|p| !p.draft);
     }
-    let all = sheets(&projects.project);
+    let mut all = sheets(&projects.project);
+    attach_plans(&mut all)?;
 
     let dist = Path::new("dist");
     if dist.exists() {
@@ -592,6 +632,7 @@ mod tests {
             facts: vec![],
             links: vec![],
             images: vec![],
+            plan: None,
             draft,
         }
     }
@@ -639,7 +680,8 @@ mod tests {
         let site: Site = read_toml("content/site.toml").unwrap();
         let projects: Projects = read_toml("content/projects.toml").unwrap();
         validate(&projects.project).unwrap();
-        let all = sheets(&projects.project);
+        let mut all = sheets(&projects.project);
+        attach_plans(&mut all).unwrap();
         let index = render_index(&site, &all);
         for (i, s) in all.iter().enumerate() {
             assert!(index.contains(&format!(r#"href="work/{}/""#, s.p.slug)));

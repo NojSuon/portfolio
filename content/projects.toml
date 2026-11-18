@@ -3,7 +3,7 @@
 #
 #   slug        URL name: work/<slug>/ (a-z, 0-9 and - only)
 #   title       Project name
-#   discipline  "architecture", "tools" or "art"
+#   discipline  "architecture", "plans", "tools" or "art"
 #   year        In quotes, e.g. "2026" or "2024–2026"
 #   kind        One short line: type, place, medium…
 #   summary     One or two sentences, shown under the title
@@ -13,6 +13,7 @@
 #   images      Files you put in static/, e.g. static/images/casa/1.jpg →
 #               src = "images/casa/1.jpg". The first one is the preview.
 #               Without images, a drawing is generated for the project.
+#   plan        A floor plan drawn from content/plans/<plan>.toml (optional)
 #   draft       true = shown only in the local preview, never on the live site
 
 # ─── Architecture ─────────────────────────────────────────────────────────────
@@ -44,6 +45,93 @@ year = "2025"
 kind = "Public space · Location"
 summary = "Placeholder. One or two sentences about the idea behind the project."
 draft = true
+
+# ─── Floor Plans ──────────────────────────────────────────────────────────────
+# Each one is drawn from content/plans/<plan>.toml (see the README there).
+
+[[project]]
+slug = "corner-boutique"
+title = "Corner Boutique"
+discipline = "plans"
+year = "2026"
+kind = "Retail · Ground floor"
+summary = "A fashion boutique on a street corner: one open sales floor behind two glazed fronts, with everything that serves it pushed to the back."
+body = """
+The sales floor takes the whole corner, so both street fronts are shop window. Display tables sit on a grid in the light, shelving runs along the blind wall, and the rails and fitting rooms gather near the till so staff can see the whole floor from one place.
+
+Stock, office and staff WC form a single back-of-house strip with its own window to the rear, out of sight from the shop but one step from it.
+"""
+plan = "boutique"
+
+[[project]]
+slug = "family-house"
+title = "Family House"
+discipline = "plans"
+year = "2026"
+kind = "Two-storey house · Residential"
+summary = "A two-storey family house on a 10 × 8.4 m footprint: open living below, four rooms to sleep and wash above, one straight stair between them."
+body = """
+The hall runs from the front door to the garden side of the house, with the stair along its wall, so every room is reached without crossing another. Study, WC and kitchen open off it; living and dining meet in one long room across the back, open to each other and to the garden.
+
+Upstairs, the landing wraps around the stair void. Two equal bedrooms take the west side, the bathroom and the main bedroom the east, and the ensuite sits over the hall, between them.
+"""
+plan = "family-house"
+
+[[project]]
+slug = "courtyard-house"
+title = "Courtyard House"
+discipline = "plans"
+year = "2026"
+kind = "Single-storey house · Residential"
+summary = "Three wings around a paved court: the day rooms along the street, bedrooms to the west, the main suite to the east, and the court open to the garden."
+body = """
+Every room looks into the court. The kitchen and living room share one long wing with a wall of sliding glass onto it; the bedrooms on either side are reached by glazed galleries that turn the walk to bed into a walk around the garden.
+
+A low wall with a gate closes the court to the south, so it can be an outdoor room in summer and a sheltered garden the rest of the year.
+"""
+plan = "courtyard-house"
+
+[[project]]
+slug = "apartment-floor"
+title = "Apartment Floor"
+discipline = "plans"
+year = "2026"
+kind = "Apartment building · Typical floor"
+summary = "A typical floor of a residential block: four flats, two of two bedrooms and two of three, around one stair, one lift and a short corridor."
+body = """
+The core sits in the middle of the north side, so the corridor stays short and every flat has its door within a few steps of the lift. The two-bedroom flats face north and west or east; the larger three-bedroom flats take the whole south front and both corners.
+
+Each flat is planned the same way: a small hall that keeps the bedrooms private, a living room with an open kitchen on the facade, and bathrooms on the inside. The east half of the floor is the west half mirrored.
+"""
+plan = "apartments"
+
+[[project]]
+slug = "shopping-arcade"
+title = "Shopping Arcade"
+discipline = "plans"
+year = "2026"
+kind = "Retail · Covered street"
+summary = "A covered street through a block: six shop units on a 7.2 m grid, glazed fronts onto the arcade, service doors to the back, and a café and public WCs at the end."
+body = """
+The arcade is a street with a roof: open at both ends, paved, planted, with benches between the columns. Each unit is the same 7.2 m bay, so tenants can take one, or knock through to two or three.
+
+Every shop has two faces. The front is glass onto the arcade; the back is a store with its own service door to the delivery yard, so goods never cross the public street. The last bay holds what everyone shares: the WCs to the north and a café to the south, its tables spilling towards the light at the east entrance.
+"""
+plan = "arcade"
+
+[[project]]
+slug = "hotel-floor"
+title = "Hotel Guest Floor"
+discipline = "plans"
+year = "2026"
+kind = "Hotel · Typical floor"
+summary = "Twenty identical guest rooms on a double-loaded corridor, with three lifts, two stairs and a linen room gathered in a central core."
+body = """
+The guest room is the whole building in miniature, so it is drawn once and repeated: 3.8 m wide, bathroom and wardrobe by the door, bed and desk by the window. Ten rooms face north, ten face south.
+
+The lifts open onto a lobby that widens the corridor at its middle, so guests arrive at a room rather than in a passage. Across from it, behind closed doors, sit the two escape stairs and the linen room that housekeeping works from.
+"""
+plan = "hotel"
 
 # ─── Tools & Software ─────────────────────────────────────────────────────────
 

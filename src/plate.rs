@@ -31,7 +31,7 @@ impl Rng {
 }
 
 /// Formats millimetres the way drawings do: 12600 → "12 600".
-fn mm(v: u32) -> String {
+pub(crate) fn mm(v: u32) -> String {
     let s = v.to_string();
     let mut out = String::new();
     for (i, c) in s.chars().enumerate() {
