@@ -2,7 +2,7 @@
 
 Personal portfolio for architecture, tools & software, and arts & design, laid out as a set of drawing sheets. Live at https://nojsuon.github.io/portfolio/.
 
-Every project is a numbered sheet: **A-01…** Architecture, **F-01…** Floor Plans, **T-01…** Tools & Software, **D-01…** Arts & Design. The index lists them like a drawing register. Each project gets its own page with a title block of facts, figures and text.
+Every project is a numbered sheet: **A-01…** Architecture (including the floor plans), **T-01…** Tools & Software, **D-01…** Arts & Design. The index lists them like a drawing register. Each project gets its own page with a title block of facts, figures and text.
 
 ## Languages
 
@@ -27,7 +27,7 @@ The site is in **Spanish** (the main language, at the root), **English** (`en/`)
 
 ## Adding a project
 
-1. Add a `[[project]]` block to `content/projects.toml` with `discipline = "architecture"`, `"plans"`, `"tools"` or `"art"`. For a floor plan, add `plan = "<name>"` and write `content/plans/<name>.toml`.
+1. Add a `[[project]]` block to `content/projects.toml` with `discipline = "architecture"`, `"tools"` or `"art"`. For a floor plan, add `plan = "<name>"` and write `content/plans/<name>.toml`.
 2. Put its images in `static/images/<slug>/` and list them under `images`. The first one is the preview on the index.
 3. Keep `draft = true` while you work on it: drafts show in the local preview, never on the live site.
 

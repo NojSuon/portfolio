@@ -1,9 +1,9 @@
 # One [[project]] per sheet. Sheets are grouped by discipline and numbered in
-# the order they appear here: A-01, A-02… / F-01… / T-01… / D-01…
+# the order they appear here: A-01, A-02… / T-01… / D-01…
 #
 #   slug        URL name: work/<slug>/ (a-z, 0-9 and - only)
 #   title       Project name
-#   discipline  "architecture", "plans", "tools" or "art"
+#   discipline  "architecture", "tools" or "art"
 #   year        In quotes, e.g. "2026" or "2024–2026"
 #   kind        One short line: type, place, medium…
 #   summary     One or two sentences, shown under the title
@@ -27,6 +27,190 @@
 # A missing language falls back to Spanish; `cargo run` warns about it.
 
 # ─── Architecture ─────────────────────────────────────────────────────────────
+
+# Floor plans: each one is drawn from content/plans/<plan>.toml (see the
+# README there). Room names are translated with content/plans/words.toml.
+
+[[project]]
+slug = "corner-boutique"
+title.es = "Boutique en esquina"
+title.en = "Corner Boutique"
+title.ko = "코너 부티크"
+discipline = "architecture"
+year = "2026"
+kind.es = "Comercio · Planta baja"
+kind.en = "Retail · Ground floor"
+kind.ko = "상업 · 1층"
+summary.es = "Una tienda de moda en una esquina: un solo piso de ventas detrás de dos fachadas de vidrio, con todo lo que lo sirve llevado al fondo."
+summary.en = "A fashion boutique on a street corner: one open sales floor behind two glazed fronts, with everything that serves it pushed to the back."
+summary.ko = "길모퉁이의 패션 부티크. 유리로 된 두 면의 파사드 뒤에 하나의 열린 매장을 두고, 매장을 지원하는 공간은 모두 뒤쪽으로 밀어 넣었어요."
+body.es = """
+El piso de ventas ocupa toda la esquina, así que los dos frentes a la calle son escaparate. Las mesas de exhibición se ordenan en retícula bajo la luz, la estantería corre por el muro ciego, y los percheros y probadores se juntan cerca de la caja para que el personal vea toda la tienda desde un solo punto.
+
+Bodega, oficina y baño del personal forman una sola franja de servicio con su propia ventana al fondo: fuera de la vista de la tienda, pero a un paso de ella.
+"""
+body.en = """
+The sales floor takes the whole corner, so both street fronts are shop window. Display tables sit on a grid in the light, shelving runs along the blind wall, and the rails and fitting rooms gather near the till so staff can see the whole floor from one place.
+
+Stock, office and staff WC form a single back-of-house strip with its own window to the rear, out of sight from the shop but one step from it.
+"""
+body.ko = """
+매장이 모퉁이 전체를 차지하므로 길에 면한 두 면이 모두 쇼윈도가 돼요. 진열대는 빛이 드는 자리에 격자로 놓이고, 선반은 창 없는 벽을 따라 이어지며, 행거와 탈의실은 계산대 가까이에 모여 직원이 한 자리에서 매장 전체를 볼 수 있어요.
+
+창고, 사무실, 직원 화장실은 뒤쪽에 창을 둔 하나의 후방 공간으로 묶었어요. 매장에서는 보이지 않지만, 한 걸음이면 닿는 거리예요.
+"""
+plan = "boutique"
+
+[[project]]
+slug = "family-house"
+title.es = "Casa familiar"
+title.en = "Family House"
+title.ko = "가족 주택"
+discipline = "architecture"
+year = "2026"
+kind.es = "Casa de dos plantas · Vivienda"
+kind.en = "Two-storey house · Residential"
+kind.ko = "2층 주택 · 주거"
+summary.es = "Una casa familiar de dos plantas sobre una huella de 10 × 8.4 m: estar abierto abajo, cuatro espacios para dormir y asearse arriba, y una escalera recta entre ambos."
+summary.en = "A two-storey family house on a 10 × 8.4 m footprint: open living below, four rooms to sleep and wash above, one straight stair between them."
+summary.ko = "10 × 8.4 m 대지 위의 2층 가족 주택. 아래층에는 열린 생활 공간, 위층에는 잠자고 씻는 네 개의 방, 그 사이를 곧은 계단 하나가 이어 줘요."
+body.es = """
+El vestíbulo corre de la puerta de entrada al lado del jardín, con la escalera junto a su muro, así que a cada espacio se llega sin cruzar otro. Estudio, medio baño y cocina se abren a él; sala y comedor se encuentran en una sola habitación larga al fondo, abiertos entre sí y al jardín.
+
+Arriba, el vestíbulo rodea el hueco de la escalera. Dos dormitorios iguales ocupan el lado oeste, el baño y el dormitorio principal el este, y el baño privado queda sobre el vestíbulo, entre ellos.
+"""
+body.en = """
+The hall runs from the front door to the garden side of the house, with the stair along its wall, so every room is reached without crossing another. Study, WC and kitchen open off it; living and dining meet in one long room across the back, open to each other and to the garden.
+
+Upstairs, the landing wraps around the stair void. Two equal bedrooms take the west side, the bathroom and the main bedroom the east, and the ensuite sits over the hall, between them.
+"""
+body.ko = """
+현관 홀은 현관문에서 정원 쪽까지 이어지고 계단은 홀의 벽을 따라 놓여 있어, 어느 방이든 다른 방을 거치지 않고 들어갈 수 있어요. 서재, 화장실, 주방이 홀에서 열리고, 거실과 식당은 뒤쪽의 긴 한 공간에서 만나 서로에게, 그리고 정원으로 열려 있어요.
+
+위층에서는 홀이 계단 오픈 공간을 감싸요. 같은 크기의 침실 두 개가 서쪽을, 욕실과 안방이 동쪽을 차지하고, 전용 욕실은 그 사이 현관 홀 위에 놓여요.
+"""
+plan = "family-house"
+
+[[project]]
+slug = "courtyard-house"
+title.es = "Casa patio"
+title.en = "Courtyard House"
+title.ko = "중정 주택"
+discipline = "architecture"
+year = "2026"
+kind.es = "Casa de una planta · Vivienda"
+kind.en = "Single-storey house · Residential"
+kind.ko = "단층 주택 · 주거"
+summary.es = "Tres alas alrededor de un patio empedrado: los espacios de día hacia la calle, los dormitorios al oeste, la suite principal al este y el patio abierto al jardín."
+summary.en = "Three wings around a paved court: the day rooms along the street, bedrooms to the west, the main suite to the east, and the court open to the garden."
+summary.ko = "포장된 중정을 둘러싼 세 개의 날개. 낮 공간은 길을 따라, 침실은 서쪽에, 안방은 동쪽에 두고, 중정은 정원으로 열려 있어요."
+body.es = """
+Todos los espacios miran al patio. La cocina y la sala comparten un ala larga con un muro de vidrio corredizo hacia él; a los dormitorios de cada lado se llega por galerías acristaladas que convierten el camino a la cama en un paseo alrededor del jardín.
+
+Un muro bajo con una puerta cierra el patio al sur, para que sea una habitación al aire libre en verano y un jardín resguardado el resto del año.
+"""
+body.en = """
+Every room looks into the court. The kitchen and living room share one long wing with a wall of sliding glass onto it; the bedrooms on either side are reached by glazed galleries that turn the walk to bed into a walk around the garden.
+
+A low wall with a gate closes the court to the south, so it can be an outdoor room in summer and a sheltered garden the rest of the year.
+"""
+body.ko = """
+모든 방이 중정을 바라봐요. 주방과 거실은 중정 쪽으로 미닫이 유리벽을 둔 하나의 긴 날개를 함께 쓰고, 양쪽의 침실로는 유리 갤러리를 지나 들어가므로 잠자리로 가는 길이 정원을 한 바퀴 도는 산책이 돼요.
+
+문이 달린 낮은 담이 중정의 남쪽을 닫아, 여름에는 바깥 방이 되고 나머지 계절에는 바람을 막아 주는 정원이 돼요.
+"""
+plan = "courtyard-house"
+
+[[project]]
+slug = "apartment-floor"
+title.es = "Planta de departamentos"
+title.en = "Apartment Floor"
+title.ko = "공동주택 기준층"
+discipline = "architecture"
+year = "2026"
+kind.es = "Edificio de departamentos · Planta tipo"
+kind.en = "Apartment building · Typical floor"
+kind.ko = "공동주택 · 기준층"
+summary.es = "Una planta tipo de un edificio de vivienda: cuatro departamentos, dos de dos dormitorios y dos de tres, alrededor de una escalera, un elevador y un pasillo corto."
+summary.en = "A typical floor of a residential block: four flats, two of two bedrooms and two of three, around one stair, one lift and a short corridor."
+summary.ko = "주거동의 기준층. 침실 두 개짜리 두 세대와 세 개짜리 두 세대, 모두 네 세대가 계단 하나, 엘리베이터 하나, 짧은 복도를 둘러싸고 있어요."
+body.es = """
+El núcleo está en medio del lado norte, así que el pasillo es corto y cada departamento tiene su puerta a unos pasos del elevador. Los departamentos de dos dormitorios miran al norte y al oeste o al este; los de tres ocupan todo el frente sur y las dos esquinas.
+
+Cada departamento se organiza igual: un pequeño vestíbulo que da privacidad a los dormitorios, una sala con la cocina abierta en la fachada y los baños hacia el interior. La mitad este de la planta es la mitad oeste en espejo.
+"""
+body.en = """
+The core sits in the middle of the north side, so the corridor stays short and every flat has its door within a few steps of the lift. The two-bedroom flats face north and west or east; the larger three-bedroom flats take the whole south front and both corners.
+
+Each flat is planned the same way: a small hall that keeps the bedrooms private, a living room with an open kitchen on the facade, and bathrooms on the inside. The east half of the floor is the west half mirrored.
+"""
+body.ko = """
+코어가 북쪽 면의 가운데에 있어 복도가 짧고, 모든 세대의 현관이 엘리베이터에서 몇 걸음 거리에 있어요. 침실 두 개 세대는 북쪽과 서쪽 또는 동쪽을 바라보고, 더 큰 침실 세 개 세대는 남쪽 면 전체와 양쪽 모서리를 차지해요.
+
+모든 세대는 같은 방식으로 계획되었어요. 침실의 사생활을 지켜 주는 작은 현관 홀, 파사드 쪽에 열린 주방을 둔 거실, 그리고 안쪽의 욕실. 층의 동쪽 절반은 서쪽 절반을 거울에 비춘 모습이에요.
+"""
+plan = "apartments"
+
+[[project]]
+slug = "shopping-arcade"
+title.es = "Pasaje comercial"
+title.en = "Shopping Arcade"
+title.ko = "쇼핑 아케이드"
+discipline = "architecture"
+year = "2026"
+kind.es = "Comercio · Calle cubierta"
+kind.en = "Retail · Covered street"
+kind.ko = "상업 · 지붕 덮인 거리"
+summary.es = "Una calle cubierta que atraviesa una manzana: seis locales en una retícula de 7.2 m, frentes de vidrio al pasaje, puertas de servicio al fondo, y un café y baños públicos al final."
+summary.en = "A covered street through a block: six shop units on a 7.2 m grid, glazed fronts onto the arcade, service doors to the back, and a café and public WCs at the end."
+summary.ko = "블록을 관통하는 지붕 덮인 거리. 7.2 m 격자 위의 점포 여섯 개, 아케이드를 향한 유리 전면, 뒤쪽의 서비스 출입구, 그리고 끝에는 카페와 공용 화장실이 있어요."
+body.es = """
+El pasaje es una calle con techo: abierta en ambos extremos, empedrada, con árboles y bancas entre las columnas. Cada local ocupa la misma crujía de 7.2 m, así que un inquilino puede tomar una, o unir dos o tres.
+
+Cada tienda tiene dos caras. El frente es de vidrio hacia el pasaje; el fondo es una bodega con su propia puerta de servicio al patio de carga, para que la mercancía nunca cruce la calle pública. La última crujía guarda lo que todos comparten: los baños al norte y un café al sur, con sus mesas hacia la luz de la entrada este.
+"""
+body.en = """
+The arcade is a street with a roof: open at both ends, paved, planted, with benches between the columns. Each unit is the same 7.2 m bay, so tenants can take one, or knock through to two or three.
+
+Every shop has two faces. The front is glass onto the arcade; the back is a store with its own service door to the delivery yard, so goods never cross the public street. The last bay holds what everyone shares: the WCs to the north and a café to the south, its tables spilling towards the light at the east entrance.
+"""
+body.ko = """
+아케이드는 지붕이 있는 거리예요. 양 끝이 열려 있고, 바닥은 포장되어 있으며, 기둥 사이에는 나무와 벤치가 있어요. 모든 점포는 같은 7.2 m 칸이므로 임차인은 한 칸을 쓰거나, 두세 칸을 터서 쓸 수 있어요.
+
+모든 점포에는 두 개의 얼굴이 있어요. 앞면은 아케이드를 향한 유리이고, 뒷면은 하역장으로 통하는 서비스 문이 따로 있는 창고여서 물건이 공공의 거리를 가로지르지 않아요. 마지막 칸에는 모두가 함께 쓰는 공간이 있어요. 북쪽에는 화장실, 남쪽에는 카페가 있고, 카페의 테이블은 동쪽 입구의 빛을 향해 놓여 있어요.
+"""
+plan = "arcade"
+
+[[project]]
+slug = "hotel-floor"
+title.es = "Planta de hotel"
+title.en = "Hotel Guest Floor"
+title.ko = "호텔 객실층"
+discipline = "architecture"
+year = "2026"
+kind.es = "Hotel · Planta tipo"
+kind.en = "Hotel · Typical floor"
+kind.ko = "호텔 · 기준층"
+summary.es = "Veinte habitaciones idénticas a ambos lados de un pasillo, con tres elevadores, dos escaleras y una ropería reunidos en un núcleo central."
+summary.en = "Twenty identical guest rooms on a double-loaded corridor, with three lifts, two stairs and a linen room gathered in a central core."
+summary.ko = "중복도 양쪽에 놓인 똑같은 객실 스무 개. 엘리베이터 세 대, 계단 두 개, 린넨실이 가운데 코어에 모여 있어요."
+body.es = """
+La habitación es todo el edificio en miniatura, así que se dibuja una vez y se repite: 3.8 m de ancho, baño y clóset junto a la puerta, cama y escritorio junto a la ventana. Diez habitaciones miran al norte y diez al sur.
+
+Los elevadores abren a un vestíbulo que ensancha el pasillo en su centro, para que los huéspedes lleguen a un espacio y no a un corredor. Enfrente, tras puertas cerradas, están las dos escaleras de emergencia y la ropería desde donde trabaja el personal de limpieza.
+"""
+body.en = """
+The guest room is the whole building in miniature, so it is drawn once and repeated: 3.8 m wide, bathroom and wardrobe by the door, bed and desk by the window. Ten rooms face north, ten face south.
+
+The lifts open onto a lobby that widens the corridor at its middle, so guests arrive at a room rather than in a passage. Across from it, behind closed doors, sit the two escape stairs and the linen room that housekeeping works from.
+"""
+body.ko = """
+객실은 건물 전체의 축소판이므로 한 번 그려서 반복해요. 폭 3.8 m, 문 옆에는 욕실과 옷장, 창 옆에는 침대와 책상. 열 개의 객실은 북쪽을, 열 개는 남쪽을 바라봐요.
+
+엘리베이터는 복도 가운데를 넓힌 홀로 열려, 손님은 통로가 아닌 하나의 공간에 도착해요. 그 맞은편 닫힌 문 뒤에는 피난 계단 두 개와 객실 관리 직원이 일하는 린넨실이 있어요.
+"""
+plan = "hotel"
+
 # Placeholders: replace them with your projects and remove `draft = true`.
 
 [[project]]
@@ -77,190 +261,6 @@ summary.es = "Provisional. Una o dos frases sobre la idea del proyecto."
 summary.en = "Placeholder. One or two sentences about the idea behind the project."
 summary.ko = "임시 내용. 프로젝트의 아이디어를 한두 문장으로 적어 주세요."
 draft = true
-
-# ─── Floor Plans ──────────────────────────────────────────────────────────────
-# Each one is drawn from content/plans/<plan>.toml (see the README there).
-# Room names are translated with content/plans/words.toml.
-
-[[project]]
-slug = "corner-boutique"
-title.es = "Boutique en esquina"
-title.en = "Corner Boutique"
-title.ko = "코너 부티크"
-discipline = "plans"
-year = "2026"
-kind.es = "Comercio · Planta baja"
-kind.en = "Retail · Ground floor"
-kind.ko = "상업 · 1층"
-summary.es = "Una tienda de moda en una esquina: un solo piso de ventas detrás de dos fachadas de vidrio, con todo lo que lo sirve llevado al fondo."
-summary.en = "A fashion boutique on a street corner: one open sales floor behind two glazed fronts, with everything that serves it pushed to the back."
-summary.ko = "길모퉁이의 패션 부티크. 유리로 된 두 면의 파사드 뒤에 하나의 열린 매장을 두고, 매장을 지원하는 공간은 모두 뒤쪽으로 밀어 넣었어요."
-body.es = """
-El piso de ventas ocupa toda la esquina, así que los dos frentes a la calle son escaparate. Las mesas de exhibición se ordenan en retícula bajo la luz, la estantería corre por el muro ciego, y los percheros y probadores se juntan cerca de la caja para que el personal vea toda la tienda desde un solo punto.
-
-Bodega, oficina y baño del personal forman una sola franja de servicio con su propia ventana al fondo: fuera de la vista de la tienda, pero a un paso de ella.
-"""
-body.en = """
-The sales floor takes the whole corner, so both street fronts are shop window. Display tables sit on a grid in the light, shelving runs along the blind wall, and the rails and fitting rooms gather near the till so staff can see the whole floor from one place.
-
-Stock, office and staff WC form a single back-of-house strip with its own window to the rear, out of sight from the shop but one step from it.
-"""
-body.ko = """
-매장이 모퉁이 전체를 차지하므로 길에 면한 두 면이 모두 쇼윈도가 돼요. 진열대는 빛이 드는 자리에 격자로 놓이고, 선반은 창 없는 벽을 따라 이어지며, 행거와 탈의실은 계산대 가까이에 모여 직원이 한 자리에서 매장 전체를 볼 수 있어요.
-
-창고, 사무실, 직원 화장실은 뒤쪽에 창을 둔 하나의 후방 공간으로 묶었어요. 매장에서는 보이지 않지만, 한 걸음이면 닿는 거리예요.
-"""
-plan = "boutique"
-
-[[project]]
-slug = "family-house"
-title.es = "Casa familiar"
-title.en = "Family House"
-title.ko = "가족 주택"
-discipline = "plans"
-year = "2026"
-kind.es = "Casa de dos plantas · Vivienda"
-kind.en = "Two-storey house · Residential"
-kind.ko = "2층 주택 · 주거"
-summary.es = "Una casa familiar de dos plantas sobre una huella de 10 × 8.4 m: estar abierto abajo, cuatro espacios para dormir y asearse arriba, y una escalera recta entre ambos."
-summary.en = "A two-storey family house on a 10 × 8.4 m footprint: open living below, four rooms to sleep and wash above, one straight stair between them."
-summary.ko = "10 × 8.4 m 대지 위의 2층 가족 주택. 아래층에는 열린 생활 공간, 위층에는 잠자고 씻는 네 개의 방, 그 사이를 곧은 계단 하나가 이어 줘요."
-body.es = """
-El vestíbulo corre de la puerta de entrada al lado del jardín, con la escalera junto a su muro, así que a cada espacio se llega sin cruzar otro. Estudio, medio baño y cocina se abren a él; sala y comedor se encuentran en una sola habitación larga al fondo, abiertos entre sí y al jardín.
-
-Arriba, el vestíbulo rodea el hueco de la escalera. Dos dormitorios iguales ocupan el lado oeste, el baño y el dormitorio principal el este, y el baño privado queda sobre el vestíbulo, entre ellos.
-"""
-body.en = """
-The hall runs from the front door to the garden side of the house, with the stair along its wall, so every room is reached without crossing another. Study, WC and kitchen open off it; living and dining meet in one long room across the back, open to each other and to the garden.
-
-Upstairs, the landing wraps around the stair void. Two equal bedrooms take the west side, the bathroom and the main bedroom the east, and the ensuite sits over the hall, between them.
-"""
-body.ko = """
-현관 홀은 현관문에서 정원 쪽까지 이어지고 계단은 홀의 벽을 따라 놓여 있어, 어느 방이든 다른 방을 거치지 않고 들어갈 수 있어요. 서재, 화장실, 주방이 홀에서 열리고, 거실과 식당은 뒤쪽의 긴 한 공간에서 만나 서로에게, 그리고 정원으로 열려 있어요.
-
-위층에서는 홀이 계단 오픈 공간을 감싸요. 같은 크기의 침실 두 개가 서쪽을, 욕실과 안방이 동쪽을 차지하고, 전용 욕실은 그 사이 현관 홀 위에 놓여요.
-"""
-plan = "family-house"
-
-[[project]]
-slug = "courtyard-house"
-title.es = "Casa patio"
-title.en = "Courtyard House"
-title.ko = "중정 주택"
-discipline = "plans"
-year = "2026"
-kind.es = "Casa de una planta · Vivienda"
-kind.en = "Single-storey house · Residential"
-kind.ko = "단층 주택 · 주거"
-summary.es = "Tres alas alrededor de un patio empedrado: los espacios de día hacia la calle, los dormitorios al oeste, la suite principal al este y el patio abierto al jardín."
-summary.en = "Three wings around a paved court: the day rooms along the street, bedrooms to the west, the main suite to the east, and the court open to the garden."
-summary.ko = "포장된 중정을 둘러싼 세 개의 날개. 낮 공간은 길을 따라, 침실은 서쪽에, 안방은 동쪽에 두고, 중정은 정원으로 열려 있어요."
-body.es = """
-Todos los espacios miran al patio. La cocina y la sala comparten un ala larga con un muro de vidrio corredizo hacia él; a los dormitorios de cada lado se llega por galerías acristaladas que convierten el camino a la cama en un paseo alrededor del jardín.
-
-Un muro bajo con una puerta cierra el patio al sur, para que sea una habitación al aire libre en verano y un jardín resguardado el resto del año.
-"""
-body.en = """
-Every room looks into the court. The kitchen and living room share one long wing with a wall of sliding glass onto it; the bedrooms on either side are reached by glazed galleries that turn the walk to bed into a walk around the garden.
-
-A low wall with a gate closes the court to the south, so it can be an outdoor room in summer and a sheltered garden the rest of the year.
-"""
-body.ko = """
-모든 방이 중정을 바라봐요. 주방과 거실은 중정 쪽으로 미닫이 유리벽을 둔 하나의 긴 날개를 함께 쓰고, 양쪽의 침실로는 유리 갤러리를 지나 들어가므로 잠자리로 가는 길이 정원을 한 바퀴 도는 산책이 돼요.
-
-문이 달린 낮은 담이 중정의 남쪽을 닫아, 여름에는 바깥 방이 되고 나머지 계절에는 바람을 막아 주는 정원이 돼요.
-"""
-plan = "courtyard-house"
-
-[[project]]
-slug = "apartment-floor"
-title.es = "Planta de departamentos"
-title.en = "Apartment Floor"
-title.ko = "공동주택 기준층"
-discipline = "plans"
-year = "2026"
-kind.es = "Edificio de departamentos · Planta tipo"
-kind.en = "Apartment building · Typical floor"
-kind.ko = "공동주택 · 기준층"
-summary.es = "Una planta tipo de un edificio de vivienda: cuatro departamentos, dos de dos dormitorios y dos de tres, alrededor de una escalera, un elevador y un pasillo corto."
-summary.en = "A typical floor of a residential block: four flats, two of two bedrooms and two of three, around one stair, one lift and a short corridor."
-summary.ko = "주거동의 기준층. 침실 두 개짜리 두 세대와 세 개짜리 두 세대, 모두 네 세대가 계단 하나, 엘리베이터 하나, 짧은 복도를 둘러싸고 있어요."
-body.es = """
-El núcleo está en medio del lado norte, así que el pasillo es corto y cada departamento tiene su puerta a unos pasos del elevador. Los departamentos de dos dormitorios miran al norte y al oeste o al este; los de tres ocupan todo el frente sur y las dos esquinas.
-
-Cada departamento se organiza igual: un pequeño vestíbulo que da privacidad a los dormitorios, una sala con la cocina abierta en la fachada y los baños hacia el interior. La mitad este de la planta es la mitad oeste en espejo.
-"""
-body.en = """
-The core sits in the middle of the north side, so the corridor stays short and every flat has its door within a few steps of the lift. The two-bedroom flats face north and west or east; the larger three-bedroom flats take the whole south front and both corners.
-
-Each flat is planned the same way: a small hall that keeps the bedrooms private, a living room with an open kitchen on the facade, and bathrooms on the inside. The east half of the floor is the west half mirrored.
-"""
-body.ko = """
-코어가 북쪽 면의 가운데에 있어 복도가 짧고, 모든 세대의 현관이 엘리베이터에서 몇 걸음 거리에 있어요. 침실 두 개 세대는 북쪽과 서쪽 또는 동쪽을 바라보고, 더 큰 침실 세 개 세대는 남쪽 면 전체와 양쪽 모서리를 차지해요.
-
-모든 세대는 같은 방식으로 계획되었어요. 침실의 사생활을 지켜 주는 작은 현관 홀, 파사드 쪽에 열린 주방을 둔 거실, 그리고 안쪽의 욕실. 층의 동쪽 절반은 서쪽 절반을 거울에 비춘 모습이에요.
-"""
-plan = "apartments"
-
-[[project]]
-slug = "shopping-arcade"
-title.es = "Pasaje comercial"
-title.en = "Shopping Arcade"
-title.ko = "쇼핑 아케이드"
-discipline = "plans"
-year = "2026"
-kind.es = "Comercio · Calle cubierta"
-kind.en = "Retail · Covered street"
-kind.ko = "상업 · 지붕 덮인 거리"
-summary.es = "Una calle cubierta que atraviesa una manzana: seis locales en una retícula de 7.2 m, frentes de vidrio al pasaje, puertas de servicio al fondo, y un café y baños públicos al final."
-summary.en = "A covered street through a block: six shop units on a 7.2 m grid, glazed fronts onto the arcade, service doors to the back, and a café and public WCs at the end."
-summary.ko = "블록을 관통하는 지붕 덮인 거리. 7.2 m 격자 위의 점포 여섯 개, 아케이드를 향한 유리 전면, 뒤쪽의 서비스 출입구, 그리고 끝에는 카페와 공용 화장실이 있어요."
-body.es = """
-El pasaje es una calle con techo: abierta en ambos extremos, empedrada, con árboles y bancas entre las columnas. Cada local ocupa la misma crujía de 7.2 m, así que un inquilino puede tomar una, o unir dos o tres.
-
-Cada tienda tiene dos caras. El frente es de vidrio hacia el pasaje; el fondo es una bodega con su propia puerta de servicio al patio de carga, para que la mercancía nunca cruce la calle pública. La última crujía guarda lo que todos comparten: los baños al norte y un café al sur, con sus mesas hacia la luz de la entrada este.
-"""
-body.en = """
-The arcade is a street with a roof: open at both ends, paved, planted, with benches between the columns. Each unit is the same 7.2 m bay, so tenants can take one, or knock through to two or three.
-
-Every shop has two faces. The front is glass onto the arcade; the back is a store with its own service door to the delivery yard, so goods never cross the public street. The last bay holds what everyone shares: the WCs to the north and a café to the south, its tables spilling towards the light at the east entrance.
-"""
-body.ko = """
-아케이드는 지붕이 있는 거리예요. 양 끝이 열려 있고, 바닥은 포장되어 있으며, 기둥 사이에는 나무와 벤치가 있어요. 모든 점포는 같은 7.2 m 칸이므로 임차인은 한 칸을 쓰거나, 두세 칸을 터서 쓸 수 있어요.
-
-모든 점포에는 두 개의 얼굴이 있어요. 앞면은 아케이드를 향한 유리이고, 뒷면은 하역장으로 통하는 서비스 문이 따로 있는 창고여서 물건이 공공의 거리를 가로지르지 않아요. 마지막 칸에는 모두가 함께 쓰는 공간이 있어요. 북쪽에는 화장실, 남쪽에는 카페가 있고, 카페의 테이블은 동쪽 입구의 빛을 향해 놓여 있어요.
-"""
-plan = "arcade"
-
-[[project]]
-slug = "hotel-floor"
-title.es = "Planta de hotel"
-title.en = "Hotel Guest Floor"
-title.ko = "호텔 객실층"
-discipline = "plans"
-year = "2026"
-kind.es = "Hotel · Planta tipo"
-kind.en = "Hotel · Typical floor"
-kind.ko = "호텔 · 기준층"
-summary.es = "Veinte habitaciones idénticas a ambos lados de un pasillo, con tres elevadores, dos escaleras y una ropería reunidos en un núcleo central."
-summary.en = "Twenty identical guest rooms on a double-loaded corridor, with three lifts, two stairs and a linen room gathered in a central core."
-summary.ko = "중복도 양쪽에 놓인 똑같은 객실 스무 개. 엘리베이터 세 대, 계단 두 개, 린넨실이 가운데 코어에 모여 있어요."
-body.es = """
-La habitación es todo el edificio en miniatura, así que se dibuja una vez y se repite: 3.8 m de ancho, baño y clóset junto a la puerta, cama y escritorio junto a la ventana. Diez habitaciones miran al norte y diez al sur.
-
-Los elevadores abren a un vestíbulo que ensancha el pasillo en su centro, para que los huéspedes lleguen a un espacio y no a un corredor. Enfrente, tras puertas cerradas, están las dos escaleras de emergencia y la ropería desde donde trabaja el personal de limpieza.
-"""
-body.en = """
-The guest room is the whole building in miniature, so it is drawn once and repeated: 3.8 m wide, bathroom and wardrobe by the door, bed and desk by the window. Ten rooms face north, ten face south.
-
-The lifts open onto a lobby that widens the corridor at its middle, so guests arrive at a room rather than in a passage. Across from it, behind closed doors, sit the two escape stairs and the linen room that housekeeping works from.
-"""
-body.ko = """
-객실은 건물 전체의 축소판이므로 한 번 그려서 반복해요. 폭 3.8 m, 문 옆에는 욕실과 옷장, 창 옆에는 침대와 책상. 열 개의 객실은 북쪽을, 열 개는 남쪽을 바라봐요.
-
-엘리베이터는 복도 가운데를 넓힌 홀로 열려, 손님은 통로가 아닌 하나의 공간에 도착해요. 그 맞은편 닫힌 문 뒤에는 피난 계단 두 개와 객실 관리 직원이 일하는 린넨실이 있어요.
-"""
-plan = "hotel"
 
 # ─── Tools & Software ─────────────────────────────────────────────────────────
 
