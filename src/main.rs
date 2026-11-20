@@ -1,7 +1,8 @@
 //! Builds the portfolio, a set of "drawing sheets":
 //!
 //! - `content/site.toml` and `content/projects.toml` → `dist/index.html` (the
-//!   drawing index) and `dist/work/<slug>/index.html` (one sheet per project);
+//!   drawing index) and `dist/work/<slug>/index.html` (one sheet per project),
+//!   in Spanish; the same in English under `dist/en/` and Korean under `dist/ko/`;
 //! - everything in `static/` is copied into `dist/` as-is.
 //!
 //! `cargo run` builds the public site (drafts left out).
@@ -15,7 +16,7 @@ mod plate;
 
 use serde::Deserialize;
 use std::{
-    collections::HashSet,
+    collections::{BTreeMap, HashSet},
     fs,
     io::{self, Read, Write},
     net::TcpListener,
@@ -25,16 +26,226 @@ use std::{
 
 type Res<T> = Result<T, Box<dyn std::error::Error>>;
 
+// -------------------------------------------------------------- languages ---
+
+/// The site is built once per language: Spanish at the root, English under
+/// `en/`, Korean under `ko/`.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum Lang {
+    Es,
+    En,
+    Ko,
+}
+
+impl Lang {
+    const ALL: [Lang; 3] = [Lang::Es, Lang::En, Lang::Ko];
+
+    fn code(self) -> &'static str {
+        match self {
+            Lang::Es => "es",
+            Lang::En => "en",
+            Lang::Ko => "ko",
+        }
+    }
+
+    /// Folder of this language inside the site.
+    fn prefix(self) -> &'static str {
+        match self {
+            Lang::Es => "",
+            Lang::En => "en/",
+            Lang::Ko => "ko/",
+        }
+    }
+
+    /// Its own name, for the language switch.
+    fn name(self) -> &'static str {
+        match self {
+            Lang::Es => "Español",
+            Lang::En => "English",
+            Lang::Ko => "한국어",
+        }
+    }
+
+    fn ui(self) -> &'static Ui {
+        match self {
+            Lang::Es => &UI_ES,
+            Lang::En => &UI_EN,
+            Lang::Ko => &UI_KO,
+        }
+    }
+}
+
+/// Fixed words of the page frame.
+struct Ui {
+    disciplines: [&'static str; 4],
+    index: &'static str,
+    index_of_drawings: &'static str,
+    in_preparation: &'static str,
+    sheet: &'static str,
+    sheets: &'static str,
+    notes: &'static str,
+    drawn_by: &'static str,
+    title: &'static str,
+    sheet_no: &'static str,
+    scale: &'static str,
+    date: &'static str,
+    based_in: &'static str,
+    write: &'static str,
+    elsewhere: &'static str,
+    blueprint: &'static str,
+    draft: &'static str,
+    discipline: &'static str,
+    year: &'static str,
+    kind: &'static str,
+    links: &'static str,
+    other_sheets: &'static str,
+    legend: &'static str,
+    schematic: &'static str,
+    floor_plan: &'static str,
+    language: &'static str,
+}
+
+const UI_ES: Ui = Ui {
+    disciplines: ["Arquitectura", "Plantas", "Herramientas y software", "Arte y diseño"],
+    index: "Índice",
+    index_of_drawings: "Índice de planos",
+    in_preparation: "En preparación",
+    sheet: "lámina",
+    sheets: "láminas",
+    notes: "Notas",
+    drawn_by: "Dibujado por",
+    title: "Título",
+    sheet_no: "Lámina",
+    scale: "Escala",
+    date: "Fecha",
+    based_in: "Con base en",
+    write: "Escríbeme",
+    elsewhere: "En otros sitios",
+    blueprint: "Cianotipo",
+    draft: "Borrador",
+    discipline: "Disciplina",
+    year: "Año",
+    kind: "Tipo",
+    links: "Enlaces",
+    other_sheets: "Otras láminas",
+    legend: "Disciplinas",
+    schematic: "Esquema",
+    floor_plan: "Planta",
+    language: "Idioma",
+};
+
+const UI_EN: Ui = Ui {
+    disciplines: ["Architecture", "Floor Plans", "Tools & Software", "Arts & Design"],
+    index: "Index",
+    index_of_drawings: "Index of drawings",
+    in_preparation: "In preparation",
+    sheet: "sheet",
+    sheets: "sheets",
+    notes: "Notes",
+    drawn_by: "Drawn by",
+    title: "Title",
+    sheet_no: "Sheet",
+    scale: "Scale",
+    date: "Date",
+    based_in: "Based in",
+    write: "Write",
+    elsewhere: "Elsewhere",
+    blueprint: "Blueprint",
+    draft: "Draft",
+    discipline: "Discipline",
+    year: "Year",
+    kind: "Type",
+    links: "Links",
+    other_sheets: "Other sheets",
+    legend: "Disciplines",
+    schematic: "Schematic",
+    floor_plan: "Floor plan",
+    language: "Language",
+};
+
+const UI_KO: Ui = Ui {
+    disciplines: ["건축", "평면도", "도구와 소프트웨어", "예술과 디자인"],
+    index: "목차",
+    index_of_drawings: "도면 목록",
+    in_preparation: "준비 중",
+    sheet: "장",
+    sheets: "장",
+    notes: "노트",
+    drawn_by: "작성",
+    title: "제목",
+    sheet_no: "도면 번호",
+    scale: "축척",
+    date: "날짜",
+    based_in: "활동 지역",
+    write: "연락처",
+    elsewhere: "링크",
+    blueprint: "청사진",
+    draft: "초안",
+    discipline: "분야",
+    year: "연도",
+    kind: "유형",
+    links: "링크",
+    other_sheets: "다른 도면",
+    legend: "분야",
+    schematic: "개략도",
+    floor_plan: "평면도",
+    language: "언어",
+};
+
+/// Text in content files: either one string for every language, or a table
+/// `{ es = "…", en = "…", ko = "…" }`. A missing language falls back to
+/// Spanish, then English.
+#[derive(Deserialize, Clone, Debug)]
+#[serde(untagged)]
+enum Text {
+    Plain(String),
+    Tr(BTreeMap<String, String>),
+}
+
+impl Default for Text {
+    fn default() -> Self {
+        Text::Plain(String::new())
+    }
+}
+
+impl Text {
+    fn get(&self, l: Lang) -> &str {
+        match self {
+            Text::Plain(s) => s,
+            Text::Tr(m) => m
+                .get(l.code())
+                .or_else(|| m.get("es"))
+                .or_else(|| m.get("en"))
+                .or_else(|| m.values().next())
+                .map_or("", String::as_str),
+        }
+    }
+
+    /// Languages a translated text is missing.
+    fn missing(&self) -> Vec<&'static str> {
+        match self {
+            Text::Plain(_) => vec![],
+            Text::Tr(m) => Lang::ALL.iter().map(|l| l.code()).filter(|c| m.get(*c).is_none_or(|v| v.trim().is_empty())).collect(),
+        }
+    }
+}
+
+impl From<&str> for Text {
+    fn from(s: &str) -> Self {
+        Text::Plain(s.into())
+    }
+}
+
 // ---------------------------------------------------------------- content ---
 
 #[derive(Deserialize)]
 struct Site {
     name: String,
-    role: String,
-    statement: String,
-    about: String,
+    role: Text,
+    statement: Text,
+    about: Text,
     #[serde(default)]
-    location: String,
+    location: Text,
     #[serde(default)]
     email: String,
     #[serde(default)]
@@ -43,7 +254,7 @@ struct Site {
 
 #[derive(Deserialize)]
 struct Link {
-    label: String,
+    label: Text,
     url: String,
 }
 
@@ -68,13 +279,8 @@ impl Discipline {
         }
     }
 
-    fn name(self) -> &'static str {
-        match self {
-            Discipline::Architecture => "Architecture",
-            Discipline::Plans => "Floor Plans",
-            Discipline::Tools => "Tools & Software",
-            Discipline::Art => "Arts & Design",
-        }
+    fn name(self, l: Lang) -> &'static str {
+        l.ui().disciplines[self as usize]
     }
 
     fn id(self) -> &'static str {
@@ -89,27 +295,27 @@ impl Discipline {
 
 #[derive(Deserialize)]
 struct Fact {
-    label: String,
-    value: String,
+    label: Text,
+    value: Text,
 }
 
 #[derive(Deserialize)]
 struct Image {
     src: String,
     #[serde(default)]
-    caption: String,
+    caption: Text,
 }
 
 #[derive(Deserialize)]
 struct Project {
     slug: String,
-    title: String,
+    title: Text,
     discipline: Discipline,
     year: String,
-    kind: String,
-    summary: String,
+    kind: Text,
+    summary: Text,
     #[serde(default)]
-    body: String,
+    body: Text,
     #[serde(default)]
     facts: Vec<Fact>,
     #[serde(default)]
@@ -134,6 +340,16 @@ struct Sheet<'a> {
     p: &'a Project,
     code: String,
     plan: Option<floorplan::Drawing>,
+}
+
+/// Where a page sits: its language, the way back to that language's index
+/// (`home`) and to the site root with the shared assets (`assets`), and its
+/// own path inside the language folder (`path`, "" for the index).
+struct Here<'a> {
+    lang: Lang,
+    home: &'a str,
+    assets: &'a str,
+    path: String,
 }
 
 // ---------------------------------------------------------------- helpers ---
@@ -194,14 +410,14 @@ fn sheets(projects: &[Project]) -> Vec<Sheet<'_>> {
     out
 }
 
-/// Draws the floor plans of the sheets that have one.
-fn attach_plans(all: &mut [Sheet]) -> Res<()> {
+/// Draws the floor plans of the sheets that have one, in one language.
+fn attach_plans(all: &mut [Sheet], lang: Lang) -> Res<()> {
     for s in all.iter_mut() {
         if let Some(name) = &s.p.plan {
             if !valid_slug(name) {
                 return Err(format!("project {:?}: plan {name:?} must use only a-z, 0-9 and -", s.p.slug).into());
             }
-            s.plan = Some(floorplan::load(name, &s.p.slug)?);
+            s.plan = Some(floorplan::load(name, &s.p.slug, lang.code())?);
         }
     }
     Ok(())
@@ -224,6 +440,18 @@ fn validate(projects: &[Project]) -> Res<()> {
                 eprintln!("warning: project {:?}: static/{} not found", p.slug, img.src);
             }
         }
+        if !p.draft {
+            let mut texts = vec![("title", &p.title), ("kind", &p.kind), ("summary", &p.summary), ("body", &p.body)];
+            texts.extend(p.facts.iter().flat_map(|f| [("fact", &f.label), ("fact", &f.value)]));
+            texts.extend(p.links.iter().map(|l| ("link", &l.label)));
+            texts.extend(p.images.iter().map(|i| ("caption", &i.caption)));
+            for (field, t) in texts {
+                let missing = t.missing();
+                if !missing.is_empty() {
+                    eprintln!("warning: project {:?}: {field} has no {} translation", p.slug, missing.join(", "));
+                }
+            }
+        }
     }
     Ok(())
 }
@@ -231,44 +459,69 @@ fn validate(projects: &[Project]) -> Res<()> {
 // -------------------------------------------------------------- rendering ---
 
 /// The floor plan, the first image, or the generated drawing.
-fn figure(s: &Sheet, root: &str) -> String {
+fn figure(s: &Sheet, assets: &str) -> String {
     if let Some(plan) = &s.plan {
         return plan.svg.clone();
     }
     match s.p.images.first() {
-        Some(img) => format!(r#"<img src="{root}{}" alt="">"#, esc(&img.src)),
+        Some(img) => format!(r#"<img src="{assets}{}" alt="">"#, esc(&img.src)),
         None => plate::plate(&s.p.slug, &s.code),
     }
 }
 
 /// The page frame shared by every sheet: head, top bar, title block.
-fn page(site: &Site, root: &str, title: &str, description: &str, sheet_code: &str, sheet_title: &str, main: &str) -> String {
+#[allow(clippy::too_many_arguments)]
+fn page(site: &Site, here: &Here, title: &str, description: &str, sheet_code: &str, sheet_title: &str, main: &str) -> String {
+    let (lang, home, assets) = (here.lang, here.home, here.assets);
+    let ui = lang.ui();
     let nav: String = Discipline::ALL
         .iter()
-        .map(|d| format!(r##"<a href="{root}#{}"><span class="mono">{}</span><span class="dn">{}</span></a>"##, d.id(), d.letter(), esc(d.name())))
+        .map(|d| format!(r##"<a href="{home}#{}"><span class="mono">{}</span><span class="dn">{}</span></a>"##, d.id(), d.letter(), esc(d.name(lang))))
         .collect();
+    let langs: String = Lang::ALL
+        .iter()
+        .map(|l| {
+            let current = if *l == lang { r#" aria-current="true""# } else { "" };
+            format!(
+                r#"<a href="{assets}{}{}" hreflang="{code}" lang="{code}" title="{}"{current}>{}</a>"#,
+                l.prefix(),
+                here.path,
+                l.name(),
+                l.code().to_uppercase(),
+                code = l.code(),
+            )
+        })
+        .collect();
+    let alternates: String = Lang::ALL
+        .iter()
+        .map(|l| format!(r#"<link rel="alternate" hreflang="{}" href="{assets}{}{}">"#, l.code(), l.prefix(), here.path))
+        .collect::<Vec<_>>()
+        .join("\n  ");
+    let korean = if lang == Lang::Ko { "&family=Noto+Sans+KR:wght@300;400;500" } else { "" };
     format!(
         r##"<!doctype html>
-<html lang="en">
+<html lang="{code}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{title}</title>
   <meta name="description" content="{description}">
+  {alternates}
   <script>try {{ if (localStorage.getItem("theme") === "blueprint") document.documentElement.dataset.theme = "blueprint"; }} catch (e) {{}}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter+Tight:wght@300;400;500&display=swap">
-  <link rel="stylesheet" href="{root}style.css">
-  <script src="{root}main.js" defer></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter+Tight:wght@300;400;500{korean}&display=swap">
+  <link rel="stylesheet" href="{assets}style.css">
+  <script src="{assets}main.js" defer></script>
 </head>
 <body>
   <header class="bar">
-    <a class="brand" href="{root}">{name}</a>
+    <a class="brand" href="{home_link}">{name}</a>
     <nav class="disciplines">{nav}</nav>
     <div class="bar-end">
       <span class="coords mono" aria-hidden="true">X 0000 · Y 0000</span>
-      <button class="theme-toggle mono" type="button" aria-pressed="false">Blueprint</button>
+      <nav class="langs mono" aria-label="{language}">{langs}</nav>
+      <button class="theme-toggle mono" type="button" aria-pressed="false">{blueprint}</button>
     </div>
   </header>
 
@@ -277,25 +530,36 @@ fn page(site: &Site, root: &str, title: &str, description: &str, sheet_code: &st
   </main>
 
   <footer class="titleblock">
-    <div class="cell wide"><span class="k">Drawn by</span><span class="v">{name}</span></div>
-    <div class="cell wide"><span class="k">Title</span><span class="v">{sheet_title}</span></div>
-    <div class="cell"><span class="k">Sheet</span><span class="v mono">{sheet_code}</span></div>
-    <div class="cell"><span class="k">Scale</span><span class="v mono">1:1</span></div>
-    <div class="cell"><span class="k">Date</span><span class="v mono">{year}</span></div>
+    <div class="cell wide"><span class="k">{drawn_by}</span><span class="v">{name}</span></div>
+    <div class="cell wide"><span class="k">{title_k}</span><span class="v">{sheet_title}</span></div>
+    <div class="cell"><span class="k">{sheet_k}</span><span class="v mono">{sheet_code}</span></div>
+    <div class="cell"><span class="k">{scale}</span><span class="v mono">1:1</span></div>
+    <div class="cell"><span class="k">{date}</span><span class="v mono">{year}</span></div>
   </footer>
   <div id="preview" aria-hidden="true"></div>
 </body>
 </html>
 "##,
+        code = lang.code(),
         title = esc(title),
         description = esc(description),
+        home_link = if home.is_empty() { "./" } else { home },
         name = esc(&site.name),
+        language = ui.language,
+        blueprint = ui.blueprint,
+        drawn_by = ui.drawn_by,
+        title_k = ui.title,
+        sheet_k = ui.sheet_no,
+        scale = ui.scale,
+        date = ui.date,
         sheet_title = esc(sheet_title),
         year = current_year(),
     )
 }
 
-fn render_index(site: &Site, all: &[Sheet]) -> String {
+fn render_index(site: &Site, all: &[Sheet], lang: Lang) -> String {
+    let ui = lang.ui();
+    let here = Here { lang, home: "", assets: if lang == Lang::Es { "" } else { "../" }, path: String::new() };
     let mut main = String::new();
 
     let legend: String = Discipline::ALL
@@ -306,40 +570,43 @@ fn render_index(site: &Site, all: &[Sheet]) -> String {
                 r##"<a href="#{}"><span class="mono">{}</span>{}<span class="mono count">{n:02}</span></a>"##,
                 d.id(),
                 d.letter(),
-                esc(d.name())
+                esc(d.name(lang))
             )
         })
         .collect();
     main.push_str(&format!(
         r#"    <section class="cover">
-      <p class="label mono">00 — Index · {role}</p>
+      <p class="label mono">00 — {index} · {role}</p>
       <h1 class="statement">{statement}</h1>
-      <nav class="legend" aria-label="Disciplines">{legend}</nav>
+      <nav class="legend" aria-label="{legend_label}">{legend}</nav>
     </section>
 "#,
-        role = esc(&site.role),
-        statement = esc(&site.statement),
+        index = ui.index,
+        role = esc(site.role.get(lang)),
+        statement = esc(site.statement.get(lang)),
+        legend_label = ui.legend,
     ));
 
     for d in Discipline::ALL {
         let mine: Vec<&Sheet> = all.iter().filter(|s| s.p.discipline == d).collect();
         let rows: String = if mine.is_empty() {
             format!(
-                r#"<li><div class="row empty"><span class="code mono">{}-00</span><span class="title">In preparation</span></div></li>"#,
-                d.letter()
+                r#"<li><div class="row empty"><span class="code mono">{}-00</span><span class="title">{}</span></div></li>"#,
+                d.letter(),
+                ui.in_preparation
             )
         } else {
             mine.iter()
                 .map(|s| {
-                    let draft = if s.p.draft { r#" <span class="draft mono">Draft</span>"# } else { "" };
+                    let draft = if s.p.draft { format!(r#" <span class="draft mono">{}</span>"#, ui.draft) } else { String::new() };
                     format!(
                         r#"<li><a class="row" href="work/{slug}/"><span class="code mono">{code}</span><span class="title">{title}{draft}</span><span class="kind">{kind}</span><span class="year mono">{year}</span></a><template class="preview">{fig}</template></li>"#,
                         slug = s.p.slug,
                         code = s.code,
-                        title = esc(&s.p.title),
-                        kind = esc(&s.p.kind),
+                        title = esc(s.p.title.get(lang)),
+                        kind = esc(s.p.kind.get(lang)),
                         year = esc(&s.p.year),
-                        fig = figure(s, ""),
+                        fig = figure(s, here.assets),
                     )
                 })
                 .collect()
@@ -356,60 +623,69 @@ fn render_index(site: &Site, all: &[Sheet]) -> String {
 "#,
             id = d.id(),
             letter = d.letter(),
-            name = esc(d.name()),
+            name = esc(d.name(lang)),
             n = mine.len(),
-            sheets = if mine.len() == 1 { "sheet" } else { "sheets" },
+            sheets = if mine.len() == 1 { ui.sheet } else { ui.sheets },
         ));
     }
 
     let mut contact = String::new();
-    if !site.location.is_empty() {
-        contact.push_str(&format!("<dt>Based in</dt><dd>{}</dd>", esc(&site.location)));
+    let location = site.location.get(lang);
+    if !location.is_empty() {
+        contact.push_str(&format!("<dt>{}</dt><dd>{}</dd>", ui.based_in, esc(location)));
     }
     if !site.email.is_empty() {
-        contact.push_str(&format!(r#"<dt>Write</dt><dd><a href="mailto:{0}">{0}</a></dd>"#, esc(&site.email)));
+        contact.push_str(&format!(r#"<dt>{}</dt><dd><a href="mailto:{1}">{1}</a></dd>"#, ui.write, esc(&site.email)));
     }
     if !site.links.is_empty() {
         let links: String = site
             .links
             .iter()
-            .map(|l| format!(r#"<a href="{}">{}</a>"#, esc(&l.url), esc(&l.label)))
+            .map(|l| format!(r#"<a href="{}">{}</a>"#, esc(&l.url), esc(l.label.get(lang))))
             .collect::<Vec<_>>()
             .join(" ");
-        contact.push_str(&format!("<dt>Elsewhere</dt><dd>{links}</dd>"));
+        contact.push_str(&format!("<dt>{}</dt><dd>{links}</dd>", ui.elsewhere));
     }
     main.push_str(&format!(
         r#"    <section class="discipline notes" id="notes">
       <header class="discipline-head">
         <span class="letter">N</span>
-        <h2>Notes</h2>
+        <h2>{notes}</h2>
       </header>
       <div class="notes-body">
         <div class="about">{about}</div>
         <dl class="contact">{contact}</dl>
       </div>
     </section>"#,
-        about = paragraphs(&site.about),
+        notes = ui.notes,
+        about = paragraphs(site.about.get(lang)),
     ));
 
-    let title = format!("{} — {}", site.name, site.role);
-    page(site, "", &title, &site.statement, "00", "Index of drawings", &main)
+    let title = format!("{} — {}", site.name, site.role.get(lang));
+    page(site, &here, &title, site.statement.get(lang), "00", ui.index_of_drawings, &main)
 }
 
-fn render_sheet(site: &Site, all: &[Sheet], i: usize) -> String {
+fn render_sheet(site: &Site, all: &[Sheet], i: usize, lang: Lang) -> String {
+    let ui = lang.ui();
     let s = &all[i];
     let p = s.p;
     let d = p.discipline;
-    let root = "../../";
+    let here = Here { lang, home: "../../", assets: if lang == Lang::Es { "../../" } else { "../../../" }, path: format!("work/{}/", p.slug) };
+    let (home, assets) = (here.home, here.assets);
+    let title = p.title.get(lang);
+    let summary = p.summary.get(lang);
 
     let mut facts = format!(
-        r#"<dt>Discipline</dt><dd>{}</dd><dt>Year</dt><dd class="mono">{}</dd><dt>Type</dt><dd>{}</dd>"#,
-        esc(d.name()),
+        r#"<dt>{}</dt><dd>{}</dd><dt>{}</dt><dd class="mono">{}</dd><dt>{}</dt><dd>{}</dd>"#,
+        ui.discipline,
+        esc(d.name(lang)),
+        ui.year,
         esc(&p.year),
-        esc(&p.kind)
+        ui.kind,
+        esc(p.kind.get(lang))
     );
     for f in &p.facts {
-        facts.push_str(&format!("<dt>{}</dt><dd>{}</dd>", esc(&f.label), esc(&f.value)));
+        facts.push_str(&format!("<dt>{}</dt><dd>{}</dd>", esc(f.label.get(lang)), esc(f.value.get(lang))));
     }
     if let Some(plan) = &s.plan {
         for (k, v) in &plan.facts {
@@ -420,33 +696,30 @@ fn render_sheet(site: &Site, all: &[Sheet], i: usize) -> String {
         let links: String = p
             .links
             .iter()
-            .map(|l| format!(r#"<a href="{}">{} ↗</a>"#, esc(&l.url), esc(&l.label)))
+            .map(|l| format!(r#"<a href="{}">{} ↗</a>"#, esc(&l.url), esc(l.label.get(lang))))
             .collect::<Vec<_>>()
             .join("<br>");
-        facts.push_str(&format!("<dt>Links</dt><dd>{links}</dd>"));
+        facts.push_str(&format!("<dt>{}</dt><dd>{links}</dd>", ui.links));
     }
 
-    let mut plates = String::new();
-    if let Some(plan) = &s.plan {
-        plates.push_str(&format!(
-            r#"<figure class="fig plan-fig">{}<figcaption class="mono">Fig. 1 — Floor plan</figcaption></figure>{}"#,
-            plan.svg, plan.schedule
-        ));
-    }
-    plates += &if s.plan.is_some() {
-        String::new()
+    let plates: String = if let Some(plan) = &s.plan {
+        format!(
+            r#"<figure class="fig plan-fig">{}<figcaption class="mono">Fig. 1 — {}</figcaption></figure>{}"#,
+            plan.svg, ui.floor_plan, plan.schedule
+        )
     } else if p.images.is_empty() {
-        format!(r#"<figure class="fig schematic">{}<figcaption class="mono">Fig. 1 — Schematic</figcaption></figure>"#, figure(s, root))
+        format!(r#"<figure class="fig schematic">{}<figcaption class="mono">Fig. 1 — {}</figcaption></figure>"#, figure(s, assets), ui.schematic)
     } else {
         p.images
             .iter()
             .enumerate()
             .map(|(n, img)| {
-                let cap = if img.caption.is_empty() { String::new() } else { format!(" — {}", esc(&img.caption)) };
+                let caption = img.caption.get(lang);
+                let cap = if caption.is_empty() { String::new() } else { format!(" — {}", esc(caption)) };
                 format!(
-                    r#"<figure class="fig"><img src="{root}{}" alt="{}" loading="lazy"><figcaption class="mono">Fig. {}{cap}</figcaption></figure>"#,
+                    r#"<figure class="fig"><img src="{assets}{}" alt="{}" loading="lazy"><figcaption class="mono">Fig. {}{cap}</figcaption></figure>"#,
                     esc(&img.src),
-                    esc(&img.caption),
+                    esc(caption),
                     n + 1
                 )
             })
@@ -455,21 +728,16 @@ fn render_sheet(site: &Site, all: &[Sheet], i: usize) -> String {
 
     let link_to = |j: usize, rel: &str| {
         let t = &all[j];
-        format!(
-            r#"<a class="{rel}" href="../{}/"><span class="mono">{}</span>{}</a>"#,
-            t.p.slug,
-            t.code,
-            esc(&t.p.title)
-        )
+        format!(r#"<a class="{rel}" href="../{}/"><span class="mono">{}</span>{}</a>"#, t.p.slug, t.code, esc(t.p.title.get(lang)))
     };
     let prev = if i > 0 { link_to(i - 1, "prev") } else { r#"<span class="prev"></span>"#.into() };
     let next = if i + 1 < all.len() { link_to(i + 1, "next") } else { r#"<span class="next"></span>"#.into() };
-    let draft = if p.draft { r#"<span class="draft mono">Draft</span>"# } else { "" };
+    let draft = if p.draft { format!(r#"<span class="draft mono">{}</span>"#, ui.draft) } else { String::new() };
 
     let main = format!(
         r##"    <article class="sheet">
       <header class="sheet-head">
-        <p class="label mono"><a href="{root}#{id}">{letter} — {dname}</a></p>
+        <p class="label mono"><a href="{home}#{id}">{letter} — {dname}</a></p>
         <p class="sheet-code mono">{code} {draft}</p>
         <h1>{title}</h1>
         <p class="summary">{summary}</p>
@@ -477,19 +745,21 @@ fn render_sheet(site: &Site, all: &[Sheet], i: usize) -> String {
       <dl class="facts">{facts}</dl>
       <div class="plates">{plates}</div>
       <div class="body">{body}</div>
-      <nav class="pager" aria-label="Other sheets">{prev}<a class="up mono" href="{root}#{id}">Index</a>{next}</nav>
+      <nav class="pager" aria-label="{other}">{prev}<a class="up mono" href="{home}#{id}">{index}</a>{next}</nav>
     </article>"##,
         id = d.id(),
         letter = d.letter(),
-        dname = esc(d.name()),
+        dname = esc(d.name(lang)),
         code = s.code,
-        title = esc(&p.title),
-        summary = esc(&p.summary),
-        body = paragraphs(&p.body),
+        title = esc(title),
+        summary = esc(summary),
+        body = paragraphs(p.body.get(lang)),
+        other = ui.other_sheets,
+        index = ui.index,
     );
 
-    let title = format!("{} · {} — {}", s.code, p.title, site.name);
-    page(site, root, &title, &p.summary, &s.code, &p.title, &main)
+    let page_title = format!("{} · {} — {}", s.code, title, site.name);
+    page(site, &here, &page_title, summary, &s.code, title, &main)
 }
 
 // ------------------------------------------------------------------ build ---
@@ -520,25 +790,31 @@ fn build(include_drafts: bool) -> Res<()> {
     if !include_drafts {
         projects.project.retain(|p| !p.draft);
     }
-    let mut all = sheets(&projects.project);
-    attach_plans(&mut all)?;
 
     let dist = Path::new("dist");
     if dist.exists() {
         fs::remove_dir_all(dist)?;
     }
     copy_dir(Path::new("static"), dist)?;
-    fs::write(dist.join("index.html"), render_index(&site, &all))?;
-    for i in 0..all.len() {
-        let dir = dist.join("work").join(&all[i].p.slug);
-        fs::create_dir_all(&dir)?;
-        fs::write(dir.join("index.html"), render_sheet(&site, &all, i))?;
+    let mut count = 0;
+    for lang in Lang::ALL {
+        let mut all = sheets(&projects.project);
+        attach_plans(&mut all, lang)?;
+        let root = dist.join(lang.prefix());
+        fs::create_dir_all(&root)?;
+        fs::write(root.join("index.html"), render_index(&site, &all, lang))?;
+        for i in 0..all.len() {
+            let dir = root.join("work").join(&all[i].p.slug);
+            fs::create_dir_all(&dir)?;
+            fs::write(dir.join("index.html"), render_sheet(&site, &all, i, lang))?;
+        }
+        count = all.len();
     }
 
-    let drafts = all.iter().filter(|s| s.p.draft).count();
+    let drafts = projects.project.iter().filter(|p| p.draft).count();
     println!(
-        "Built dist/ with {} sheets{}.",
-        all.len(),
+        "Built dist/ with {count} sheets in {} languages{}.",
+        Lang::ALL.len(),
         if include_drafts { format!(" ({drafts} drafts included)") } else { " (drafts left out)".into() }
     );
     Ok(())
@@ -628,7 +904,7 @@ mod tests {
             year: "2026".into(),
             kind: "Kind".into(),
             summary: "Summary".into(),
-            body: String::new(),
+            body: Text::default(),
             facts: vec![],
             links: vec![],
             images: vec![],
@@ -680,23 +956,67 @@ mod tests {
         let site: Site = read_toml("content/site.toml").unwrap();
         let projects: Projects = read_toml("content/projects.toml").unwrap();
         validate(&projects.project).unwrap();
-        let mut all = sheets(&projects.project);
-        attach_plans(&mut all).unwrap();
-        let index = render_index(&site, &all);
-        for (i, s) in all.iter().enumerate() {
-            assert!(index.contains(&format!(r#"href="work/{}/""#, s.p.slug)));
-            let page = render_sheet(&site, &all, i);
-            assert!(page.contains(&s.code));
+        for lang in Lang::ALL {
+            let mut all = sheets(&projects.project);
+            attach_plans(&mut all, lang).unwrap();
+            let index = render_index(&site, &all, lang);
+            assert!(index.contains(&format!(r#"<html lang="{}">"#, lang.code())));
+            for (i, s) in all.iter().enumerate() {
+                assert!(index.contains(&format!(r#"href="work/{}/""#, s.p.slug)));
+                let page = render_sheet(&site, &all, i, lang);
+                assert!(page.contains(&s.code));
+            }
         }
+    }
+
+    #[test]
+    fn public_content_is_translated() {
+        let site: Site = read_toml("content/site.toml").unwrap();
+        for (field, t) in [("role", &site.role), ("statement", &site.statement), ("about", &site.about)] {
+            assert!(t.missing().is_empty(), "site.{field} is missing {:?}", t.missing());
+        }
+        let projects: Projects = read_toml("content/projects.toml").unwrap();
+        for p in projects.project.iter().filter(|p| !p.draft) {
+            for (field, t) in [("title", &p.title), ("kind", &p.kind), ("summary", &p.summary), ("body", &p.body)] {
+                assert!(t.missing().is_empty(), "{}: {field} is missing {:?}", p.slug, t.missing());
+            }
+            for f in &p.facts {
+                assert!(f.label.missing().is_empty() && f.value.missing().is_empty(), "{}: a fact is missing a language", p.slug);
+            }
+        }
+    }
+
+    #[test]
+    fn text_falls_back_to_spanish() {
+        let t: Text = toml::from_str::<BTreeMap<String, Text>>(r#"t = { es = "Hola", en = "Hello" }"#).unwrap().remove("t").unwrap();
+        assert_eq!(t.get(Lang::En), "Hello");
+        assert_eq!(t.get(Lang::Ko), "Hola");
+        assert_eq!(t.missing(), ["ko"]);
+        assert_eq!(Text::from("Rust").get(Lang::Ko), "Rust");
+    }
+
+    #[test]
+    fn language_switch_links_the_same_page() {
+        let site: Site = read_toml("content/site.toml").unwrap();
+        let ps = vec![project("t1", Discipline::Tools, false)];
+        let all = sheets(&ps);
+        let en = render_sheet(&site, &all, 0, Lang::En);
+        assert!(en.contains(r#"href="../../../work/t1/" hreflang="es""#));
+        assert!(en.contains(r#"href="../../../ko/work/t1/" hreflang="ko""#));
+        assert!(en.contains(r#"href="../../../style.css""#));
+        let es = render_index(&site, &all, Lang::Es);
+        assert!(es.contains(r#"href="en/" hreflang="en""#));
+        assert!(es.contains(r#"href="style.css""#));
     }
 
     #[test]
     fn empty_discipline_says_in_preparation() {
         let site: Site = read_toml("content/site.toml").unwrap();
         let ps = vec![project("t1", Discipline::Tools, false)];
-        let html = render_index(&site, &sheets(&ps));
+        let html = render_index(&site, &sheets(&ps), Lang::En);
         assert!(html.contains("A-00"));
         assert!(html.contains("D-00"));
         assert!(html.contains("In preparation"));
+        assert!(render_index(&site, &sheets(&ps), Lang::Es).contains("En preparación"));
     }
 }

@@ -4,9 +4,17 @@ Personal portfolio for architecture, tools & software, and arts & design, laid o
 
 Every project is a numbered sheet: **A-01…** Architecture, **F-01…** Floor Plans, **T-01…** Tools & Software, **D-01…** Arts & Design. The index lists them like a drawing register. Each project gets its own page with a title block of facts, figures and text.
 
+## Languages
+
+The site is in **Spanish** (the main language, at the root), **English** (`en/`) and **Korean** (`ko/`). Every page has an ES · EN · KO switch in the top bar that leads to the same page in the other language.
+
+- Text in `content/site.toml` and `content/projects.toml` can be one string for all languages (names like `"Urbanitas"`) or one entry per language: `summary.es = "…"`, `summary.en = "…"`, `summary.ko = "…"`. A missing language falls back to Spanish, and the build warns about it.
+- Room and level names in the floor plans are written in English and translated with `content/plans/words.toml`.
+- The fixed words of the page frame (menus, title block, labels) are in `src/main.rs` (`UI_ES`, `UI_EN`, `UI_KO`).
+
 ## How it works
 
-- **Rust** (`src/`) reads the content and writes the static site to `dist/`: the index and one page per project at `work/<slug>/`. Projects without images get a generated line drawing (`src/plate.rs`), always the same one for the same project. Floor plans are drawn from data (`src/floorplan.rs`, `content/plans/`).
+- **Rust** (`src/`) reads the content and writes the static site to `dist/`: the index and one page per project at `work/<slug>/`, once per language. Projects without images get a generated line drawing (`src/plate.rs`), always the same one for the same project. Floor plans are drawn from data (`src/floorplan.rs`, `content/plans/`).
 - **JavaScript** (`static/main.js`) adds the Paper/Blueprint theme switch, the cursor coordinate readout, and the drawing preview that follows the cursor over the index. The site works without it.
 
 | Folder / file | What it holds |
