@@ -1,5 +1,5 @@
 # One [[project]] per sheet. Sheets are grouped by discipline and numbered in
-# the order they appear here: A-01, A-02… / T-01… / D-01…
+# the order they appear here: A-01, A-02… / F-01… / T-01… / D-01…
 #
 #   slug        URL name: work/<slug>/ (a-z, 0-9 and - only)
 #   title       Project name
@@ -15,121 +15,250 @@
 #               Without images, a drawing is generated for the project.
 #   plan        A floor plan drawn from content/plans/<plan>.toml (optional)
 #   draft       true = shown only in the local preview, never on the live site
+#
+# Languages: the site is in Spanish (es, the main language), English (en) and
+# Korean (ko). Any text can be one string for all three, like a name:
+#   title = "Urbanitas"
+# or one entry per language, written as dotted keys:
+#   summary.es = "…"
+#   summary.en = "…"
+#   summary.ko = "…"
+# or inline: { label = { es = "Fuente", en = "Source", ko = "소스" }, … }
+# A missing language falls back to Spanish; `cargo run` warns about it.
 
 # ─── Architecture ─────────────────────────────────────────────────────────────
 # Placeholders: replace them with your projects and remove `draft = true`.
 
 [[project]]
 slug = "architecture-project-one"
-title = "Architecture project one"
+title.es = "Proyecto de arquitectura uno"
+title.en = "Architecture project one"
+title.ko = "건축 프로젝트 1"
 discipline = "architecture"
 year = "2026"
-kind = "Housing · Location"
-summary = "Placeholder. One or two sentences about the idea behind the project."
-body = """
+kind.es = "Vivienda · Lugar"
+kind.en = "Housing · Location"
+kind.ko = "주거 · 장소"
+summary.es = "Provisional. Una o dos frases sobre la idea del proyecto."
+summary.en = "Placeholder. One or two sentences about the idea behind the project."
+summary.ko = "임시 내용. 프로젝트의 아이디어를 한두 문장으로 적어 주세요."
+body.es = """
+Provisional. Describe el sitio, el programa y las decisiones principales del diseño.
+
+Un segundo párrafo puede tratar los materiales, la estructura o cómo se usa el edificio.
+"""
+body.en = """
 Placeholder. Describe the site, the brief and the main moves of the design.
 
 A second paragraph can cover materials, structure, or how people use the building.
 """
+body.ko = """
+임시 내용. 대지, 프로그램, 그리고 설계의 주요 결정을 설명해 주세요.
+
+두 번째 문단에는 재료, 구조, 또는 사람들이 건물을 사용하는 방식을 적을 수 있습니다.
+"""
 facts = [
-  { label = "Status", value = "Competition / Built / Unbuilt" },
-  { label = "Area", value = "000 m²" },
+  { label = { es = "Estado", en = "Status", ko = "상태" }, value = { es = "Concurso / Construido / No construido", en = "Competition / Built / Unbuilt", ko = "공모전 / 준공 / 미준공" } },
+  { label = { es = "Superficie", en = "Area", ko = "면적" }, value = "000 m²" },
 ]
 draft = true
 
 [[project]]
 slug = "architecture-project-two"
-title = "Architecture project two"
+title.es = "Proyecto de arquitectura dos"
+title.en = "Architecture project two"
+title.ko = "건축 프로젝트 2"
 discipline = "architecture"
 year = "2025"
-kind = "Public space · Location"
-summary = "Placeholder. One or two sentences about the idea behind the project."
+kind.es = "Espacio público · Lugar"
+kind.en = "Public space · Location"
+kind.ko = "공공 공간 · 장소"
+summary.es = "Provisional. Una o dos frases sobre la idea del proyecto."
+summary.en = "Placeholder. One or two sentences about the idea behind the project."
+summary.ko = "임시 내용. 프로젝트의 아이디어를 한두 문장으로 적어 주세요."
 draft = true
 
 # ─── Floor Plans ──────────────────────────────────────────────────────────────
 # Each one is drawn from content/plans/<plan>.toml (see the README there).
+# Room names are translated with content/plans/words.toml.
 
 [[project]]
 slug = "corner-boutique"
-title = "Corner Boutique"
+title.es = "Boutique en esquina"
+title.en = "Corner Boutique"
+title.ko = "코너 부티크"
 discipline = "plans"
 year = "2026"
-kind = "Retail · Ground floor"
-summary = "A fashion boutique on a street corner: one open sales floor behind two glazed fronts, with everything that serves it pushed to the back."
-body = """
+kind.es = "Comercio · Planta baja"
+kind.en = "Retail · Ground floor"
+kind.ko = "상업 · 1층"
+summary.es = "Una tienda de moda en una esquina: un solo piso de ventas detrás de dos fachadas de vidrio, con todo lo que lo sirve llevado al fondo."
+summary.en = "A fashion boutique on a street corner: one open sales floor behind two glazed fronts, with everything that serves it pushed to the back."
+summary.ko = "길모퉁이의 패션 부티크. 유리로 된 두 면의 파사드 뒤에 하나의 열린 매장을 두고, 매장을 지원하는 공간은 모두 뒤쪽으로 밀어 넣었습니다."
+body.es = """
+El piso de ventas ocupa toda la esquina, así que los dos frentes a la calle son escaparate. Las mesas de exhibición se ordenan en retícula bajo la luz, la estantería corre por el muro ciego, y los percheros y probadores se juntan cerca de la caja para que el personal vea toda la tienda desde un solo punto.
+
+Bodega, oficina y baño del personal forman una sola franja de servicio con su propia ventana al fondo: fuera de la vista de la tienda, pero a un paso de ella.
+"""
+body.en = """
 The sales floor takes the whole corner, so both street fronts are shop window. Display tables sit on a grid in the light, shelving runs along the blind wall, and the rails and fitting rooms gather near the till so staff can see the whole floor from one place.
 
 Stock, office and staff WC form a single back-of-house strip with its own window to the rear, out of sight from the shop but one step from it.
+"""
+body.ko = """
+매장이 모퉁이 전체를 차지하므로 길에 면한 두 면이 모두 쇼윈도가 됩니다. 진열대는 빛이 드는 자리에 격자로 놓이고, 선반은 창 없는 벽을 따라 이어지며, 행거와 탈의실은 계산대 가까이에 모여 직원이 한 자리에서 매장 전체를 볼 수 있습니다.
+
+창고, 사무실, 직원 화장실은 뒤쪽에 창을 둔 하나의 후방 공간으로 묶었습니다. 매장에서는 보이지 않지만, 한 걸음이면 닿는 거리입니다.
 """
 plan = "boutique"
 
 [[project]]
 slug = "family-house"
-title = "Family House"
+title.es = "Casa familiar"
+title.en = "Family House"
+title.ko = "가족 주택"
 discipline = "plans"
 year = "2026"
-kind = "Two-storey house · Residential"
-summary = "A two-storey family house on a 10 × 8.4 m footprint: open living below, four rooms to sleep and wash above, one straight stair between them."
-body = """
+kind.es = "Casa de dos plantas · Vivienda"
+kind.en = "Two-storey house · Residential"
+kind.ko = "2층 주택 · 주거"
+summary.es = "Una casa familiar de dos plantas sobre una huella de 10 × 8.4 m: estar abierto abajo, cuatro espacios para dormir y asearse arriba, y una escalera recta entre ambos."
+summary.en = "A two-storey family house on a 10 × 8.4 m footprint: open living below, four rooms to sleep and wash above, one straight stair between them."
+summary.ko = "10 × 8.4 m 대지 위의 2층 가족 주택. 아래층에는 열린 생활 공간, 위층에는 잠자고 씻는 네 개의 방, 그 사이를 곧은 계단 하나가 잇습니다."
+body.es = """
+El vestíbulo corre de la puerta de entrada al lado del jardín, con la escalera junto a su muro, así que a cada espacio se llega sin cruzar otro. Estudio, medio baño y cocina se abren a él; sala y comedor se encuentran en una sola habitación larga al fondo, abiertos entre sí y al jardín.
+
+Arriba, el vestíbulo rodea el hueco de la escalera. Dos dormitorios iguales ocupan el lado oeste, el baño y el dormitorio principal el este, y el baño privado queda sobre el vestíbulo, entre ellos.
+"""
+body.en = """
 The hall runs from the front door to the garden side of the house, with the stair along its wall, so every room is reached without crossing another. Study, WC and kitchen open off it; living and dining meet in one long room across the back, open to each other and to the garden.
 
 Upstairs, the landing wraps around the stair void. Two equal bedrooms take the west side, the bathroom and the main bedroom the east, and the ensuite sits over the hall, between them.
+"""
+body.ko = """
+현관 홀은 현관문에서 정원 쪽까지 이어지고 계단은 홀의 벽을 따라 놓여 있어, 어느 방이든 다른 방을 거치지 않고 들어갈 수 있습니다. 서재, 화장실, 주방이 홀에서 열리고, 거실과 식당은 뒤쪽의 긴 한 공간에서 만나 서로에게, 그리고 정원으로 열려 있습니다.
+
+위층에서는 홀이 계단 오픈 공간을 감쌉니다. 같은 크기의 침실 두 개가 서쪽을, 욕실과 안방이 동쪽을 차지하고, 전용 욕실은 그 사이 현관 홀 위에 놓입니다.
 """
 plan = "family-house"
 
 [[project]]
 slug = "courtyard-house"
-title = "Courtyard House"
+title.es = "Casa patio"
+title.en = "Courtyard House"
+title.ko = "중정 주택"
 discipline = "plans"
 year = "2026"
-kind = "Single-storey house · Residential"
-summary = "Three wings around a paved court: the day rooms along the street, bedrooms to the west, the main suite to the east, and the court open to the garden."
-body = """
+kind.es = "Casa de una planta · Vivienda"
+kind.en = "Single-storey house · Residential"
+kind.ko = "단층 주택 · 주거"
+summary.es = "Tres alas alrededor de un patio empedrado: los espacios de día hacia la calle, los dormitorios al oeste, la suite principal al este y el patio abierto al jardín."
+summary.en = "Three wings around a paved court: the day rooms along the street, bedrooms to the west, the main suite to the east, and the court open to the garden."
+summary.ko = "포장된 중정을 둘러싼 세 개의 날개. 낮 공간은 길을 따라, 침실은 서쪽에, 안방은 동쪽에 두고, 중정은 정원으로 열려 있습니다."
+body.es = """
+Todos los espacios miran al patio. La cocina y la sala comparten un ala larga con un muro de vidrio corredizo hacia él; a los dormitorios de cada lado se llega por galerías acristaladas que convierten el camino a la cama en un paseo alrededor del jardín.
+
+Un muro bajo con una puerta cierra el patio al sur, para que sea una habitación al aire libre en verano y un jardín resguardado el resto del año.
+"""
+body.en = """
 Every room looks into the court. The kitchen and living room share one long wing with a wall of sliding glass onto it; the bedrooms on either side are reached by glazed galleries that turn the walk to bed into a walk around the garden.
 
 A low wall with a gate closes the court to the south, so it can be an outdoor room in summer and a sheltered garden the rest of the year.
+"""
+body.ko = """
+모든 방이 중정을 바라봅니다. 주방과 거실은 중정 쪽으로 미닫이 유리벽을 둔 하나의 긴 날개를 함께 쓰고, 양쪽의 침실로는 유리 갤러리를 지나 들어가므로 잠자리로 가는 길이 정원을 한 바퀴 도는 산책이 됩니다.
+
+문이 달린 낮은 담이 중정의 남쪽을 닫아, 여름에는 바깥 방이 되고 나머지 계절에는 바람을 막아 주는 정원이 됩니다.
 """
 plan = "courtyard-house"
 
 [[project]]
 slug = "apartment-floor"
-title = "Apartment Floor"
+title.es = "Planta de departamentos"
+title.en = "Apartment Floor"
+title.ko = "공동주택 기준층"
 discipline = "plans"
 year = "2026"
-kind = "Apartment building · Typical floor"
-summary = "A typical floor of a residential block: four flats, two of two bedrooms and two of three, around one stair, one lift and a short corridor."
-body = """
+kind.es = "Edificio de departamentos · Planta tipo"
+kind.en = "Apartment building · Typical floor"
+kind.ko = "공동주택 · 기준층"
+summary.es = "Una planta tipo de un edificio de vivienda: cuatro departamentos, dos de dos dormitorios y dos de tres, alrededor de una escalera, un elevador y un pasillo corto."
+summary.en = "A typical floor of a residential block: four flats, two of two bedrooms and two of three, around one stair, one lift and a short corridor."
+summary.ko = "주거동의 기준층. 침실 두 개짜리 두 세대와 세 개짜리 두 세대, 모두 네 세대가 계단 하나, 엘리베이터 하나, 짧은 복도를 둘러싸고 있습니다."
+body.es = """
+El núcleo está en medio del lado norte, así que el pasillo es corto y cada departamento tiene su puerta a unos pasos del elevador. Los departamentos de dos dormitorios miran al norte y al oeste o al este; los de tres ocupan todo el frente sur y las dos esquinas.
+
+Cada departamento se organiza igual: un pequeño vestíbulo que da privacidad a los dormitorios, una sala con la cocina abierta en la fachada y los baños hacia el interior. La mitad este de la planta es la mitad oeste en espejo.
+"""
+body.en = """
 The core sits in the middle of the north side, so the corridor stays short and every flat has its door within a few steps of the lift. The two-bedroom flats face north and west or east; the larger three-bedroom flats take the whole south front and both corners.
 
 Each flat is planned the same way: a small hall that keeps the bedrooms private, a living room with an open kitchen on the facade, and bathrooms on the inside. The east half of the floor is the west half mirrored.
+"""
+body.ko = """
+코어가 북쪽 면의 가운데에 있어 복도가 짧고, 모든 세대의 현관이 엘리베이터에서 몇 걸음 거리에 있습니다. 침실 두 개 세대는 북쪽과 서쪽 또는 동쪽을 바라보고, 더 큰 침실 세 개 세대는 남쪽 면 전체와 양쪽 모서리를 차지합니다.
+
+모든 세대는 같은 방식으로 계획되었습니다. 침실의 사생활을 지켜 주는 작은 현관 홀, 파사드 쪽에 열린 주방을 둔 거실, 그리고 안쪽의 욕실. 층의 동쪽 절반은 서쪽 절반을 거울에 비춘 모습입니다.
 """
 plan = "apartments"
 
 [[project]]
 slug = "shopping-arcade"
-title = "Shopping Arcade"
+title.es = "Pasaje comercial"
+title.en = "Shopping Arcade"
+title.ko = "쇼핑 아케이드"
 discipline = "plans"
 year = "2026"
-kind = "Retail · Covered street"
-summary = "A covered street through a block: six shop units on a 7.2 m grid, glazed fronts onto the arcade, service doors to the back, and a café and public WCs at the end."
-body = """
+kind.es = "Comercio · Calle cubierta"
+kind.en = "Retail · Covered street"
+kind.ko = "상업 · 지붕 덮인 거리"
+summary.es = "Una calle cubierta que atraviesa una manzana: seis locales en una retícula de 7.2 m, frentes de vidrio al pasaje, puertas de servicio al fondo, y un café y baños públicos al final."
+summary.en = "A covered street through a block: six shop units on a 7.2 m grid, glazed fronts onto the arcade, service doors to the back, and a café and public WCs at the end."
+summary.ko = "블록을 관통하는 지붕 덮인 거리. 7.2 m 격자 위의 점포 여섯 개, 아케이드를 향한 유리 전면, 뒤쪽의 서비스 출입구, 그리고 끝에는 카페와 공용 화장실이 있습니다."
+body.es = """
+El pasaje es una calle con techo: abierta en ambos extremos, empedrada, con árboles y bancas entre las columnas. Cada local ocupa la misma crujía de 7.2 m, así que un inquilino puede tomar una, o unir dos o tres.
+
+Cada tienda tiene dos caras. El frente es de vidrio hacia el pasaje; el fondo es una bodega con su propia puerta de servicio al patio de carga, para que la mercancía nunca cruce la calle pública. La última crujía guarda lo que todos comparten: los baños al norte y un café al sur, con sus mesas hacia la luz de la entrada este.
+"""
+body.en = """
 The arcade is a street with a roof: open at both ends, paved, planted, with benches between the columns. Each unit is the same 7.2 m bay, so tenants can take one, or knock through to two or three.
 
 Every shop has two faces. The front is glass onto the arcade; the back is a store with its own service door to the delivery yard, so goods never cross the public street. The last bay holds what everyone shares: the WCs to the north and a café to the south, its tables spilling towards the light at the east entrance.
+"""
+body.ko = """
+아케이드는 지붕이 있는 거리입니다. 양 끝이 열려 있고, 바닥은 포장되어 있으며, 기둥 사이에는 나무와 벤치가 있습니다. 모든 점포는 같은 7.2 m 칸이므로 임차인은 한 칸을 쓰거나, 두세 칸을 터서 쓸 수 있습니다.
+
+모든 점포에는 두 개의 얼굴이 있습니다. 앞면은 아케이드를 향한 유리이고, 뒷면은 하역장으로 통하는 서비스 문이 따로 있는 창고여서 물건이 공공의 거리를 가로지르지 않습니다. 마지막 칸에는 모두가 함께 쓰는 공간이 있습니다. 북쪽에는 화장실, 남쪽에는 카페가 있고, 카페의 테이블은 동쪽 입구의 빛을 향해 놓여 있습니다.
 """
 plan = "arcade"
 
 [[project]]
 slug = "hotel-floor"
-title = "Hotel Guest Floor"
+title.es = "Planta de hotel"
+title.en = "Hotel Guest Floor"
+title.ko = "호텔 객실층"
 discipline = "plans"
 year = "2026"
-kind = "Hotel · Typical floor"
-summary = "Twenty identical guest rooms on a double-loaded corridor, with three lifts, two stairs and a linen room gathered in a central core."
-body = """
+kind.es = "Hotel · Planta tipo"
+kind.en = "Hotel · Typical floor"
+kind.ko = "호텔 · 기준층"
+summary.es = "Veinte habitaciones idénticas a ambos lados de un pasillo, con tres elevadores, dos escaleras y una ropería reunidos en un núcleo central."
+summary.en = "Twenty identical guest rooms on a double-loaded corridor, with three lifts, two stairs and a linen room gathered in a central core."
+summary.ko = "중복도 양쪽에 놓인 똑같은 객실 스무 개. 엘리베이터 세 대, 계단 두 개, 린넨실이 가운데 코어에 모여 있습니다."
+body.es = """
+La habitación es todo el edificio en miniatura, así que se dibuja una vez y se repite: 3.8 m de ancho, baño y clóset junto a la puerta, cama y escritorio junto a la ventana. Diez habitaciones miran al norte y diez al sur.
+
+Los elevadores abren a un vestíbulo que ensancha el pasillo en su centro, para que los huéspedes lleguen a un espacio y no a un corredor. Enfrente, tras puertas cerradas, están las dos escaleras de emergencia y la ropería desde donde trabaja el personal de limpieza.
+"""
+body.en = """
 The guest room is the whole building in miniature, so it is drawn once and repeated: 3.8 m wide, bathroom and wardrobe by the door, bed and desk by the window. Ten rooms face north, ten face south.
 
 The lifts open onto a lobby that widens the corridor at its middle, so guests arrive at a room rather than in a passage. Across from it, behind closed doors, sit the two escape stairs and the linen room that housekeeping works from.
+"""
+body.ko = """
+객실은 건물 전체의 축소판이므로 한 번 그려서 반복합니다. 폭 3.8 m, 문 옆에는 욕실과 옷장, 창 옆에는 침대와 책상. 열 개의 객실은 북쪽을, 열 개는 남쪽을 바라봅니다.
+
+엘리베이터는 복도 가운데를 넓힌 홀로 열려, 손님은 통로가 아닌 하나의 공간에 도착합니다. 그 맞은편 닫힌 문 뒤에는 피난 계단 두 개와 객실 관리 직원이 일하는 린넨실이 있습니다.
 """
 plan = "hotel"
 
@@ -140,18 +269,32 @@ slug = "urbanitas"
 title = "Urbanitas"
 discipline = "tools"
 year = "2026"
-kind = "Procedural architecture · Rust"
-summary = "A generator and builder for landscapes, towns and houses, where architecture becomes a set of rules."
-body = """
+kind.es = "Arquitectura procedural · Rust"
+kind.en = "Procedural architecture · Rust"
+kind.ko = "절차적 건축 · Rust"
+summary.es = "Un generador y constructor de paisajes, pueblos y casas, donde la arquitectura se vuelve un conjunto de reglas."
+summary.en = "A generator and builder for landscapes, towns and houses, where architecture becomes a set of rules."
+summary.ko = "풍경과 마을과 집을 생성하고 짓는 도구. 건축이 하나의 규칙 체계가 됩니다."
+body.es = """
+Urbanitas trabaja en tres escalas. Genera terreno: colinas, montañas, valles, mares con playas o acantilados, lagos y ríos. Haz clic donde va la plaza y un pueblo crece hacia afuera siguiendo las curvas de nivel, con sus casas mirando a las calles, cada una en su propia terraza.
+
+Cada casa se genera a partir de unos pocos parámetros (pisos, tamaño, tipo, habitaciones, forma de la planta y estilo) hasta sus arcos, ventanas, balcones, techo y jardín. Todo está hecho de piezas modulares, así que cualquier casa puede editarse pieza por pieza, guardarse como diseño y reutilizarse en los pueblos.
+"""
+body.en = """
 Urbanitas works at three scales. It generates terrain: hills, mountains, valleys, seas with beaches or cliffs, lakes and rivers. Click where the piazza goes and a town grows outwards along the contours, its houses facing the streets, each on its own terraced pad.
 
 Every house is generated from a few parameters (floors, size, type, rooms, plan shape and style) down to its archways, windows, balconies, roof and garden. Everything is made of modular parts, so any house can be edited piece by piece, saved as a design, and reused by the towns.
 """
+body.ko = """
+Urbanitas는 세 가지 규모에서 작동합니다. 언덕, 산, 계곡, 해변이나 절벽이 있는 바다, 호수와 강 같은 지형을 생성합니다. 광장이 놓일 자리를 클릭하면 마을이 등고선을 따라 바깥으로 자라나고, 집들은 저마다의 계단식 터 위에서 길을 바라봅니다.
+
+모든 집은 층수, 크기, 유형, 방, 평면 형태, 양식 같은 몇 가지 매개변수로부터 아치, 창, 발코니, 지붕, 정원까지 생성됩니다. 모든 것이 모듈 부품으로 이루어져 있어 어떤 집이든 부품 단위로 편집하고, 디자인으로 저장하고, 마을에서 다시 쓸 수 있습니다.
+"""
 facts = [
-  { label = "Built with", value = "Rust" },
+  { label = { es = "Hecho con", en = "Built with", ko = "사용 기술" }, value = "Rust" },
 ]
 links = [
-  { label = "Source", url = "https://github.com/NojSuon/urbanitas" },
+  { label = { es = "Código fuente", en = "Source", ko = "소스 코드" }, url = "https://github.com/NojSuon/urbanitas" },
 ]
 
 [[project]]
@@ -159,19 +302,33 @@ slug = "coniugatio"
 title = "coniugatio"
 discipline = "tools"
 year = "2026"
-kind = "Language tool · Rust, WebAssembly"
-summary = "A site to learn about indigenous languages and conjugate their verbs, with the whole engine running in the browser."
-body = """
+kind.es = "Herramienta de lengua · Rust, WebAssembly"
+kind.en = "Language tool · Rust, WebAssembly"
+kind.ko = "언어 도구 · Rust, WebAssembly"
+summary.es = "Un sitio para conocer lenguas indígenas y conjugar sus verbos, con todo el motor funcionando en el navegador."
+summary.en = "A site to learn about indigenous languages and conjugate their verbs, with the whole engine running in the browser."
+summary.ko = "토착 언어를 배우고 그 동사를 활용해 볼 수 있는 사이트. 엔진 전체가 브라우저에서 돌아갑니다."
+body.es = """
+El motor de conjugación está escrito en Rust y maneja clíticos, cambios de raíz y plurales. Compilado a WebAssembly, funciona por completo en el navegador, así que el sitio es estático y no necesita servidor.
+
+Forma parte de Mati Mati, un proyecto sobre lenguas y culturas mesoamericanas.
+"""
+body.en = """
 The conjugation engine is written in Rust and handles clitics, root changes and plurals. Compiled to WebAssembly, it runs entirely in the browser, so the site is static and needs no server.
 
 Part of Mati Mati, a project about Mesoamerican languages and cultures.
 """
+body.ko = """
+활용 엔진은 Rust로 작성되었고 접어, 어근 변화, 복수형을 다룹니다. WebAssembly로 컴파일되어 브라우저 안에서 완전히 돌아가므로, 사이트는 정적이고 서버가 필요 없습니다.
+
+메소아메리카의 언어와 문화를 다루는 프로젝트 Mati Mati의 일부입니다.
+"""
 facts = [
-  { label = "Built with", value = "Rust, WebAssembly" },
+  { label = { es = "Hecho con", en = "Built with", ko = "사용 기술" }, value = "Rust, WebAssembly" },
 ]
 links = [
-  { label = "Visit site", url = "https://nojsuon.github.io/coniugatio/" },
-  { label = "Source", url = "https://github.com/NojSuon/coniugatio" },
+  { label = { es = "Visitar el sitio", en = "Visit site", ko = "사이트 방문" }, url = "https://nojsuon.github.io/coniugatio/" },
+  { label = { es = "Código fuente", en = "Source", ko = "소스 코드" }, url = "https://github.com/NojSuon/coniugatio" },
 ]
 
 [[project]]
@@ -179,19 +336,33 @@ slug = "chinamitl"
 title = "Chinamitl"
 discipline = "tools"
 year = "2026"
-kind = "Interactive 3D explorer · three.js"
-summary = "A low-poly explorer of a chinampa, layer by layer, and of how thousands of them formed the blocks of Mexiko-Tenochtitlan."
-body = """
+kind.es = "Explorador 3D interactivo · three.js"
+kind.en = "Interactive 3D explorer · three.js"
+kind.ko = "인터랙티브 3D 탐색기 · three.js"
+summary.es = "Un explorador low-poly de una chinampa, capa por capa, y de cómo miles de ellas formaron las manzanas de México-Tenochtitlan."
+summary.en = "A low-poly explorer of a chinampa, layer by layer, and of how thousands of them formed the blocks of Mexiko-Tenochtitlan."
+summary.ko = "치남파를 층층이 살펴보는 로우폴리 탐색기. 수천 개의 치남파가 어떻게 멕시코-테노치티틀란의 블록을 이루었는지 보여 줍니다."
+body.es = """
+La chinampa puede abrirse en sus nueve capas (estacas, troncos, tule, lodo, tierra) y leerse en vista axonométrica, una capa a la vez. A su alrededor, la vida del lago: tules, peces, ajolotes, garzas y los volcanes en el horizonte.
+
+Disponible en español, inglés y chino.
+"""
+body.en = """
 The chinampa can be opened into its nine layers (stakes, logs, tule, mud, soil) and read in an axonometric view, one layer at a time. Around it, the life of the lake: reeds, fish, axolotls, herons, and the volcanoes on the horizon.
 
 Available in Spanish, English and Chinese.
 """
+body.ko = """
+치남파를 말뚝, 통나무, 툴레, 진흙, 흙으로 이루어진 아홉 개의 층으로 열어, 엑소노메트릭 시점에서 한 층씩 읽을 수 있습니다. 그 주위에는 호수의 생명이 있습니다. 갈대, 물고기, 아홀로틀, 왜가리, 그리고 지평선 위의 화산들.
+
+스페인어, 영어, 중국어로 제공됩니다.
+"""
 facts = [
-  { label = "Built with", value = "JavaScript, three.js" },
+  { label = { es = "Hecho con", en = "Built with", ko = "사용 기술" }, value = "JavaScript, three.js" },
 ]
 links = [
-  { label = "Visit site", url = "https://nojsuon.github.io/chinamitl/" },
-  { label = "Source", url = "https://github.com/NojSuon/chinamitl" },
+  { label = { es = "Visitar el sitio", en = "Visit site", ko = "사이트 방문" }, url = "https://nojsuon.github.io/chinamitl/" },
+  { label = { es = "Código fuente", en = "Source", ko = "소스 코드" }, url = "https://github.com/NojSuon/chinamitl" },
 ]
 
 [[project]]
@@ -199,14 +370,18 @@ slug = "buul"
 title = "Buul"
 discipline = "tools"
 year = "2026"
-kind = "Board game · TypeScript, React"
-summary = "A Mayan board game for the browser, with online play."
+kind.es = "Juego de mesa · TypeScript, React"
+kind.en = "Board game · TypeScript, React"
+kind.ko = "보드게임 · TypeScript, React"
+summary.es = "Un juego de mesa maya para el navegador, con partidas en línea."
+summary.en = "A Mayan board game for the browser, with online play."
+summary.ko = "브라우저에서 즐기는 마야 보드게임. 온라인 대전을 지원합니다."
 facts = [
-  { label = "Built with", value = "TypeScript, React, Firebase" },
+  { label = { es = "Hecho con", en = "Built with", ko = "사용 기술" }, value = "TypeScript, React, Firebase" },
 ]
 links = [
-  { label = "Play", url = "https://nojsuon.github.io/buul/" },
-  { label = "Source", url = "https://github.com/NojSuon/buul" },
+  { label = { es = "Jugar", en = "Play", ko = "플레이" }, url = "https://nojsuon.github.io/buul/" },
+  { label = { es = "Código fuente", en = "Source", ko = "소스 코드" }, url = "https://github.com/NojSuon/buul" },
 ]
 
 [[project]]
@@ -214,15 +389,19 @@ slug = "matimati"
 title = "Mati Mati"
 discipline = "tools"
 year = "2026"
-kind = "Publication & site generator · Rust"
-summary = "The home of Mati Mati: magazine, tools and contact in three languages, generated as static HTML by a small Rust program."
+kind.es = "Publicación y generador de sitio · Rust"
+kind.en = "Publication & site generator · Rust"
+kind.ko = "출판물 및 사이트 생성기 · Rust"
+summary.es = "La casa de Mati Mati: revista, herramientas y contacto en tres idiomas, generados como HTML estático por un pequeño programa en Rust."
+summary.en = "The home of Mati Mati: magazine, tools and contact in three languages, generated as static HTML by a small Rust program."
+summary.ko = "Mati Mati의 홈. 잡지, 도구, 연락처를 세 가지 언어로 담았고, 작은 Rust 프로그램이 정적 HTML로 생성합니다."
 facts = [
-  { label = "Built with", value = "Rust" },
-  { label = "Languages", value = "Spanish, English, Chinese" },
+  { label = { es = "Hecho con", en = "Built with", ko = "사용 기술" }, value = "Rust" },
+  { label = { es = "Idiomas", en = "Languages", ko = "언어" }, value = { es = "Español, inglés, chino", en = "Spanish, English, Chinese", ko = "스페인어, 영어, 중국어" } },
 ]
 links = [
-  { label = "Visit site", url = "https://nojsuon.github.io/matimati/" },
-  { label = "Source", url = "https://github.com/NojSuon/matimati" },
+  { label = { es = "Visitar el sitio", en = "Visit site", ko = "사이트 방문" }, url = "https://nojsuon.github.io/matimati/" },
+  { label = { es = "Código fuente", en = "Source", ko = "소스 코드" }, url = "https://github.com/NojSuon/matimati" },
 ]
 
 [[project]]
@@ -230,13 +409,17 @@ slug = "rust-terrain"
 title = "Rust Terrain"
 discipline = "tools"
 year = "2026"
-kind = "Terrain study · Rust, Bevy"
-summary = "A walkable terrain built with the Bevy game engine."
+kind.es = "Estudio de terreno · Rust, Bevy"
+kind.en = "Terrain study · Rust, Bevy"
+kind.ko = "지형 연구 · Rust, Bevy"
+summary.es = "Un terreno recorrible construido con el motor de juegos Bevy."
+summary.en = "A walkable terrain built with the Bevy game engine."
+summary.ko = "Bevy 게임 엔진으로 만든, 걸어 다닐 수 있는 지형."
 facts = [
-  { label = "Built with", value = "Rust, Bevy" },
+  { label = { es = "Hecho con", en = "Built with", ko = "사용 기술" }, value = "Rust, Bevy" },
 ]
 links = [
-  { label = "Source", url = "https://github.com/NojSuon/rust-terrain" },
+  { label = { es = "Código fuente", en = "Source", ko = "소스 코드" }, url = "https://github.com/NojSuon/rust-terrain" },
 ]
 
 # ─── Arts & Design ────────────────────────────────────────────────────────────
@@ -244,22 +427,34 @@ links = [
 
 [[project]]
 slug = "art-project-one"
-title = "Art project one"
+title.es = "Proyecto de arte uno"
+title.en = "Art project one"
+title.ko = "예술 프로젝트 1"
 discipline = "art"
 year = "2026"
-kind = "Series · Medium"
-summary = "Placeholder. One or two sentences about the work."
+kind.es = "Serie · Técnica"
+kind.en = "Series · Medium"
+kind.ko = "연작 · 매체"
+summary.es = "Provisional. Una o dos frases sobre la obra."
+summary.en = "Placeholder. One or two sentences about the work."
+summary.ko = "임시 내용. 작품에 대해 한두 문장으로 적어 주세요."
 facts = [
-  { label = "Medium", value = "Ink on paper" },
-  { label = "Size", value = "00 × 00 cm" },
+  { label = { es = "Técnica", en = "Medium", ko = "매체" }, value = { es = "Tinta sobre papel", en = "Ink on paper", ko = "종이에 잉크" } },
+  { label = { es = "Tamaño", en = "Size", ko = "크기" }, value = "00 × 00 cm" },
 ]
 draft = true
 
 [[project]]
 slug = "design-project-one"
-title = "Design project one"
+title.es = "Proyecto de diseño uno"
+title.en = "Design project one"
+title.ko = "디자인 프로젝트 1"
 discipline = "art"
 year = "2025"
-kind = "Identity · Client"
-summary = "Placeholder. One or two sentences about the brief and the result."
+kind.es = "Identidad · Cliente"
+kind.en = "Identity · Client"
+kind.ko = "아이덴티티 · 클라이언트"
+summary.es = "Provisional. Una o dos frases sobre el encargo y el resultado."
+summary.en = "Placeholder. One or two sentences about the brief and the result."
+summary.ko = "임시 내용. 의뢰 내용과 결과를 한두 문장으로 적어 주세요."
 draft = true

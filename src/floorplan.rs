@@ -501,11 +501,136 @@ pub struct Drawing {
 
 /// Reads and draws `content/plans/<name>.toml`. `id` must be unique per page
 /// (the project slug): it prefixes the SVG pattern ids.
-pub fn load(name: &str, id: &str) -> Result<Drawing, String> {
+/// `lang` is a language code ("es", "en", "ko"): room names, level names
+/// and the drawing's own words are translated with `content/plans/words.toml`.
+pub fn load(name: &str, id: &str, lang: &str) -> Result<Drawing, String> {
     let path = format!("content/plans/{name}.toml");
     let text = fs::read_to_string(&path).map_err(|e| format!("{path}: {e}"))?;
-    let plan: Plan = toml::from_str(&text).map_err(|e| format!("{path}: {e}"))?;
-    render(&plan, id).map_err(|e| format!("{path}: {e}"))
+    let mut plan: Plan = toml::from_str(&text).map_err(|e| format!("{path}: {e}"))?;
+    let dict = Dict::load(lang)?;
+    localize(&mut plan, &dict);
+    render(&plan, id, &dict).map_err(|e| format!("{path}: {e}"))
+}
+
+// ------------------------------------------------------------ translation ---
+
+const WORDS: &str = "content/plans/words.toml";
+
+/// Words the drawing and schedule use themselves, besides the plans' names.
+#[cfg(test)]
+const UI_WORDS: [&str; 15] = [
+    "Floor plan",
+    "Room schedule",
+    "Level",
+    "Room",
+    "No.",
+    "Each",
+    "Total",
+    "Net floor area",
+    "Levels",
+    "Footprint",
+    "Net area",
+    "rooms",
+    "net",
+    "Up",
+    "Dn",
+];
+
+/// English words of the plans → their translations, from `words.toml`:
+/// `"Kitchen" = { es = "Cocina", ko = "주방" }`.
+pub struct Dict {
+    lang: String,
+    words: BTreeMap<String, BTreeMap<String, String>>,
+}
+
+impl Dict {
+    fn load(lang: &str) -> Result<Dict, String> {
+        let words = match fs::read_to_string(WORDS) {
+            Ok(text) => toml::from_str(&text).map_err(|e| format!("{WORDS}: {e}"))?,
+            Err(_) => BTreeMap::new(),
+        };
+        Ok(Dict { lang: lang.to_string(), words })
+    }
+
+    fn lookup(&self, s: &str) -> Option<&String> {
+        self.words.get(s).and_then(|m| m.get(&self.lang))
+    }
+
+    /// "Bedroom 2" is translated as "Bedroom" plus its number.
+    fn numbered<'a>(&self, s: &'a str) -> Option<(&'a str, &'a str)> {
+        let (head, tail) = s.rsplit_once(' ')?;
+        (!tail.is_empty() && tail.chars().all(|c| c.is_ascii_digit())).then_some((head, tail))
+    }
+
+    fn t(&self, s: &str) -> String {
+        if let Some(w) = self.lookup(s) {
+            return w.clone();
+        }
+        if self.lang != "en"
+            && let Some((head, n)) = self.numbered(s)
+            && self.lookup(head).is_some()
+        {
+            return format!("{} {n}", self.t(head));
+        }
+        s.to_string()
+    }
+
+    /// Whether `s` has a translation (English always has).
+    #[cfg(test)]
+    fn knows(&self, s: &str) -> bool {
+        self.lang == "en" || self.lookup(s).is_some() || self.numbered(s).is_some_and(|(h, _)| self.lookup(h).is_some())
+    }
+}
+
+fn localize_items(it: &mut Items, d: &Dict) {
+    for r in &mut it.rooms {
+        // Numbered names keep their schedule name before they are translated.
+        if r.kind.is_none() && r.name.contains('{') {
+            r.kind = Some(r.key());
+        }
+        r.kind = r.kind.as_deref().map(|k| d.t(k));
+        r.name = d.t(&r.name);
+    }
+    for l in &mut it.labels {
+        l.text = d.t(&l.text);
+    }
+    for st in &mut it.stairs {
+        st.label = Some(d.t(st.label.as_deref().unwrap_or("Up")));
+    }
+}
+
+fn localize(plan: &mut Plan, d: &Dict) {
+    for l in &mut plan.level {
+        l.name = d.t(&l.name);
+        localize_items(&mut l.items, d);
+        for g in &mut l.group {
+            localize_items(&mut g.items, d);
+        }
+    }
+}
+
+/// Every word of a plan that needs a translation.
+#[cfg(test)]
+fn plan_words(plan: &Plan) -> Vec<String> {
+    let mut out = Vec::new();
+    let items = |it: &Items, out: &mut Vec<String>| {
+        for r in &it.rooms {
+            if !r.name.contains('{') {
+                out.push(r.name.clone());
+            }
+            out.extend(r.kind.clone());
+        }
+        out.extend(it.labels.iter().map(|l| l.text.clone()));
+        out.extend(it.stairs.iter().filter_map(|s| s.label.clone()));
+    };
+    for l in &plan.level {
+        out.push(l.name.clone());
+        items(&l.items, &mut out);
+        for g in &l.group {
+            items(&g.items, &mut out);
+        }
+    }
+    out
 }
 
 fn esc(s: &str) -> String {
@@ -543,7 +668,7 @@ const BOTTOM: f64 = 100.0;
 const GAP: f64 = 120.0;
 const WIDTH: f64 = 1000.0;
 
-fn render(plan: &Plan, id: &str) -> Result<Drawing, String> {
+fn render(plan: &Plan, id: &str, d: &Dict) -> Result<Drawing, String> {
     if plan.level.is_empty() {
         return Err("a plan needs at least one [[level]]".into());
     }
@@ -559,7 +684,8 @@ fn render(plan: &Plan, id: &str) -> Result<Drawing, String> {
     let mut o = String::new();
     let _ = write!(
         o,
-        r##"<svg class="plate plan" viewBox="0 0 {WIDTH} {height}" role="img" aria-label="Floor plan" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"><defs>"##
+        r##"<svg class="plate plan" viewBox="0 0 {WIDTH} {height}" role="img" aria-label="{aria}" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"><defs>"##,
+        aria = esc(&d.t("Floor plan")),
     );
     let tile = 600.0 * s;
     let _ = write!(
@@ -573,7 +699,7 @@ fn render(plan: &Plan, id: &str) -> Result<Drawing, String> {
     let mut x0 = LEFT;
     for lv in &levels {
         let pen = Pen { s, ox: x0 - lv.bb[0] * s, oy: TOP - lv.bb[1] * s, k };
-        draw_level(&mut o, plan, lv, &pen, id);
+        draw_level(&mut o, plan, lv, &pen, id, d);
         x0 += lv.w() * s + GAP;
     }
     north_arrow(&mut o, WIDTH - 34.0, 40.0);
@@ -609,25 +735,32 @@ fn render(plan: &Plan, id: &str) -> Result<Drawing, String> {
         }
     }
     let schedule = format!(
-        r#"<table class="schedule"><caption class="mono">Room schedule</caption><thead><tr><th>Level</th><th>Room</th><th>No.</th><th>Each</th><th>Total</th></tr></thead><tbody>{rows}</tbody><tfoot><tr><td colspan="4">Net floor area</td><td class="mono">{}</td></tr></tfoot></table>"#,
+        r#"<table class="schedule"><caption class="mono">{}</caption><thead><tr><th>{}</th><th>{}</th><th>{}</th><th>{}</th><th>{}</th></tr></thead><tbody>{rows}</tbody><tfoot><tr><td colspan="4">{}</td><td class="mono">{}</td></tr></tfoot></table>"#,
+        d.t("Room schedule"),
+        d.t("Level"),
+        d.t("Room"),
+        d.t("No."),
+        d.t("Each"),
+        d.t("Total"),
+        d.t("Net floor area"),
         area_text(total)
     );
 
     let mut facts = Vec::new();
     if levels.len() > 1 {
-        facts.push(("Levels".to_string(), levels.len().to_string()));
+        facts.push((d.t("Levels"), levels.len().to_string()));
     }
     let fp = &levels[0];
     facts.push((
-        "Footprint".to_string(),
+        d.t("Footprint"),
         format!("{:.1} × {:.1} m", fp.w() / 1000.0, fp.h() / 1000.0),
     ));
-    facts.push(("Net area".to_string(), area_text(total)));
+    facts.push((d.t("Net area"), area_text(total)));
 
     Ok(Drawing { svg: o, schedule, facts })
 }
 
-fn draw_level(o: &mut String, plan: &Plan, lv: &Lv, p: &Pen, id: &str) {
+fn draw_level(o: &mut String, plan: &Plan, lv: &Lv, p: &Pen, id: &str, d: &Dict) {
     let it = &lv.it;
     let k = p.k;
     let (bx0, by0, bx1, by1) = (p.x(lv.bb[0]), p.y(lv.bb[1]), p.x(lv.bb[2]), p.y(lv.bb[3]));
@@ -801,10 +934,12 @@ fn draw_level(o: &mut String, plan: &Plan, lv: &Lv, p: &Pen, id: &str) {
     let ty = by1 + if lv.src.grid.is_some() { 66.0 } else { 44.0 };
     let _ = write!(
         o,
-        r#"<text class="title" x="{bx0:.1}" y="{ty:.1}" font-size="11">{}</text><text class="ra" x="{bx0:.1}" y="{:.1}" font-size="8">{} · NET {}</text>"#,
+        r#"<text class="title" x="{bx0:.1}" y="{ty:.1}" font-size="11">{}</text><text class="ra" x="{bx0:.1}" y="{:.1}" font-size="8">{} {} · {} {}</text>"#,
         esc(&lv.src.name.to_uppercase()),
         ty + 13.0,
-        lv.it.rooms.iter().filter(|r| r.list && !r.outdoor).count().to_string() + " ROOMS",
+        lv.it.rooms.iter().filter(|r| r.list && !r.outdoor).count(),
+        esc(&d.t("rooms").to_uppercase()),
+        esc(&d.t("net").to_uppercase()),
         area_text(lv.area()).to_uppercase()
     );
 }
@@ -1251,7 +1386,7 @@ mod tests {
         assert_eq!(names, ["Room 101", "Room 102", "Room 103", "Room 104"]);
         assert_eq!(lv.it.rooms[3].rect, Some([4000.0, 6000.0, 4000.0, 2000.0]));
         assert!(lv.it.rooms.iter().all(|r| r.key() == "Room"));
-        let d = render(&plan, "t").unwrap();
+        let d = render(&plan, "t", &Dict::load("en").unwrap()).unwrap();
         assert!(d.schedule.contains("<td>Room</td><td class=\"mono\">4</td>"));
     }
 
@@ -1275,16 +1410,48 @@ mod tests {
         let mut found = 0;
         for entry in fs::read_dir("content/plans").unwrap() {
             let path = entry.unwrap().path();
-            if path.extension().and_then(|e| e.to_str()) != Some("toml") {
+            if path.extension().and_then(|e| e.to_str()) != Some("toml") || path.ends_with("words.toml") {
                 continue;
             }
             let name = path.file_stem().unwrap().to_str().unwrap().to_string();
-            let d = load(&name, &name).unwrap_or_else(|e| panic!("{e}"));
-            assert!(d.svg.starts_with("<svg") && d.svg.ends_with("</svg>"));
+            for lang in ["es", "en", "ko"] {
+                let d = load(&name, &name, lang).unwrap_or_else(|e| panic!("{e}"));
+                assert!(d.svg.starts_with("<svg") && d.svg.ends_with("</svg>"));
+                assert!(!d.svg.contains("NaN"), "{name}: NaN in drawing");
+            }
+            let d = load(&name, &name, "en").unwrap();
             assert!(d.schedule.contains("Net floor area"));
-            assert!(!d.svg.contains("NaN"), "{name}: NaN in drawing");
             found += 1;
         }
         assert!(found >= 6, "expected the six sample plans, found {found}");
+    }
+
+    #[test]
+    fn every_word_is_translated() {
+        for lang in ["es", "ko"] {
+            let d = Dict::load(lang).unwrap();
+            let mut missing: Vec<String> = UI_WORDS.iter().filter(|w| !d.knows(w)).map(|w| w.to_string()).collect();
+            for entry in fs::read_dir("content/plans").unwrap() {
+                let path = entry.unwrap().path();
+                if path.extension().and_then(|e| e.to_str()) != Some("toml") || path.ends_with("words.toml") {
+                    continue;
+                }
+                let plan: Plan = toml::from_str(&fs::read_to_string(&path).unwrap()).unwrap();
+                missing.extend(plan_words(&plan).into_iter().filter(|w| !d.knows(w)));
+            }
+            missing.sort();
+            missing.dedup();
+            assert!(missing.is_empty(), "{WORDS} has no {lang} for: {missing:?}");
+        }
+    }
+
+    #[test]
+    fn numbered_names_are_translated() {
+        let mut words = BTreeMap::new();
+        words.insert("Bedroom".to_string(), BTreeMap::from([("es".to_string(), "Dormitorio".to_string())]));
+        let d = Dict { lang: "es".into(), words };
+        assert_eq!(d.t("Bedroom 2"), "Dormitorio 2");
+        assert_eq!(d.t("Kitchen"), "Kitchen");
+        assert!(d.knows("Bedroom 3") && !d.knows("Kitchen"));
     }
 }

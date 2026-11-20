@@ -1,0 +1,82 @@
+# Translations of the words used in the floor plans. The plans are written in
+# English; each entry gives the Spanish (es) and Korean (ko) for one name.
+# "Bedroom 2" is translated as "Bedroom" plus its number. `{n}` and `{a}`
+# stand for the number or letter of a repeated room. `cargo test` lists any
+# name that is missing here.
+
+# ── Levels ───────────────────────────────────────────────────────────────────
+"Ground floor" = { es = "Planta baja", ko = "1층" }
+"First floor" = { es = "Planta alta", ko = "2층" }
+"Typical floor" = { es = "Planta tipo", ko = "기준층" }
+"Typical guest floor" = { es = "Planta tipo de habitaciones", ko = "객실 기준층" }
+
+# ── Homes ────────────────────────────────────────────────────────────────────
+"Hall" = { es = "Entrada", ko = "현관 홀" }
+"Landing" = { es = "Pasillo", ko = "홀" }
+"Living" = { es = "Sala", ko = "거실" }
+"Living / Dining" = { es = "Sala / Comedor", ko = "거실 / 식당" }
+"Kitchen" = { es = "Cocina", ko = "주방" }
+"Kitchen/Dining" = { es = "Cocina/Comedor", ko = "주방/식당" }
+"Study" = { es = "Estudio", ko = "서재" }
+"Bedroom" = { es = "Dormitorio", ko = "침실" }
+"Main bedroom" = { es = "Dormitorio principal", ko = "안방" }
+"Bath" = { es = "Baño", ko = "욕실" }
+"Bathroom" = { es = "Baño", ko = "욕실" }
+"Ensuite" = { es = "Baño privado", ko = "전용 욕실" }
+"WC" = { es = "Medio baño", ko = "화장실" }
+"Gallery" = { es = "Galería", ko = "갤러리" }
+"Courtyard" = { es = "Patio", ko = "중정" }
+"Corridor" = { es = "Pasillo", ko = "복도" }
+
+# ── Apartment building ───────────────────────────────────────────────────────
+"Flat {a} · 2-bed" = { es = "Depto. {a} · 2 dorm.", ko = "{a}세대 · 침실 2" }
+"Flat {a} · 3-bed" = { es = "Depto. {a} · 3 dorm.", ko = "{a}세대 · 침실 3" }
+"Flat, 2 bedrooms" = { es = "Departamento de 2 dormitorios", ko = "침실 2개 세대" }
+"Flat, 3 bedrooms" = { es = "Departamento de 3 dormitorios", ko = "침실 3개 세대" }
+"Stair" = { es = "Escalera", ko = "계단" }
+"Lift" = { es = "Elevador", ko = "엘리베이터" }
+"Lifts" = { es = "Elevadores", ko = "엘리베이터" }
+"Riser" = { es = "Ductos", ko = "설비 샤프트" }
+
+# ── Shops ────────────────────────────────────────────────────────────────────
+"Sales floor" = { es = "Piso de ventas", ko = "매장" }
+"Stock" = { es = "Bodega", ko = "창고" }
+"Store" = { es = "Bodega", ko = "창고" }
+"Office" = { es = "Oficina", ko = "사무실" }
+"Fitting" = { es = "Probador", ko = "탈의실" }
+"Fitting room" = { es = "Probador", ko = "탈의실" }
+"Arcade" = { es = "Pasaje", ko = "아케이드" }
+"Unit {n}" = { es = "Local {n}", ko = "점포 {n}" }
+"Shop unit" = { es = "Local comercial", ko = "점포" }
+"Unit store" = { es = "Bodega del local", ko = "점포 창고" }
+"Café" = { es = "Café", ko = "카페" }
+"Café kitchen" = { es = "Cocina del café", ko = "카페 주방" }
+"Female WC" = { es = "Mujeres", ko = "여자 화장실" }
+"Male WC" = { es = "Hombres", ko = "남자 화장실" }
+"Acc. WC" = { es = "Accesible", ko = "다목적" }
+"Accessible WC" = { es = "Baño accesible", ko = "장애인 화장실" }
+"Public WC" = { es = "Baños públicos", ko = "공용 화장실" }
+"WC lobby" = { es = "Vestíbulo de baños", ko = "화장실 전실" }
+"Cleaner" = { es = "Limpieza", ko = "청소실" }
+
+# ── Hotel ────────────────────────────────────────────────────────────────────
+"Guest room" = { es = "Habitación", ko = "객실" }
+"Lift lobby" = { es = "Vestíbulo de elevadores", ko = "엘리베이터 홀" }
+"Linen" = { es = "Ropería", ko = "린넨실" }
+
+# ── Words of the drawing and the room schedule ───────────────────────────────
+"Floor plan" = { es = "Planta", ko = "평면도" }
+"Room schedule" = { es = "Cuadro de superficies", ko = "실 면적표" }
+"Level" = { es = "Nivel", ko = "층" }
+"Room" = { es = "Espacio", ko = "실" }
+"No." = { es = "Cant.", ko = "수량" }
+"Each" = { es = "Unitaria", ko = "개별" }
+"Total" = { es = "Total", ko = "합계" }
+"Net floor area" = { es = "Superficie útil", ko = "전용 면적" }
+"Levels" = { es = "Niveles", ko = "층수" }
+"Footprint" = { es = "Medidas exteriores", ko = "외곽 치수" }
+"Net area" = { es = "Superficie útil", ko = "전용 면적" }
+"rooms" = { es = "espacios", ko = "실" }
+"net" = { es = "útil", ko = "전용" }
+"Up" = { es = "Sube", ko = "UP" }
+"Dn" = { es = "Baja", ko = "DN" }

@@ -1,17 +1,12 @@
 # Site-wide text. Edit freely, then run `cargo run -- --serve` to preview.
+#
+# Text can be one string for every language, or a table with one entry per
+# language: { es = "…", en = "…", ko = "…" }. Spanish is the main language
+# (the site root); English is at en/ and Korean at ko/.
 
 name = "Noj Suon"
-role = "Architecture · Software · Art & Design"
 
-# The large sentence on the index page.
-statement = "I design buildings, build tools, and make images: three practices drawn on the same sheet."
-
-# Shown under "Notes". Separate paragraphs with a blank line.
-about = """
-I work across three scales of making. In architecture I think in plans, sections and the way people move through space. In software I build the tools I wish existed: language tools that run Rust in the browser, generators that grow terrain, towns and houses. In art and design I work with line, pattern and colour.
-
-The three keep borrowing from each other. Buildings become procedural rules, code becomes drawing, and drawings become places again.
-"""
+role = { es = "Arquitectura · Software · Arte y diseño", en = "Architecture · Software · Art & Design", ko = "건축 · 소프트웨어 · 예술과 디자인" }
 
 # Optional. Leave empty ("") to hide.
 location = ""
@@ -20,3 +15,27 @@ email = ""
 links = [
   { label = "GitHub", url = "https://github.com/NojSuon" },
 ]
+
+# The large sentence on the index page.
+[statement]
+es = "Diseño edificios, construyo herramientas y hago imágenes: tres prácticas dibujadas en la misma lámina."
+en = "I design buildings, build tools, and make images: three practices drawn on the same sheet."
+ko = "건물을 설계하고, 도구를 만들고, 이미지를 그립니다. 한 장의 도면 위에 그린 세 가지 작업입니다."
+
+# Shown under "Notes". Separate paragraphs with a blank line.
+[about]
+es = """
+Trabajo en tres escalas del hacer. En arquitectura pienso en plantas, cortes y en la manera en que la gente recorre el espacio. En software construyo las herramientas que me gustaría que existieran: herramientas de lengua que ejecutan Rust en el navegador, generadores que hacen crecer terrenos, pueblos y casas. En arte y diseño trabajo con la línea, el patrón y el color.
+
+Las tres se prestan cosas entre sí todo el tiempo. Los edificios se vuelven reglas procedurales, el código se vuelve dibujo y los dibujos vuelven a ser lugares.
+"""
+en = """
+I work across three scales of making. In architecture I think in plans, sections and the way people move through space. In software I build the tools I wish existed: language tools that run Rust in the browser, generators that grow terrain, towns and houses. In art and design I work with line, pattern and colour.
+
+The three keep borrowing from each other. Buildings become procedural rules, code becomes drawing, and drawings become places again.
+"""
+ko = """
+저는 세 가지 규모의 만들기를 오가며 일합니다. 건축에서는 평면과 단면, 그리고 사람들이 공간을 지나가는 방식을 생각합니다. 소프트웨어에서는 있었으면 하는 도구를 직접 만듭니다. 브라우저에서 Rust로 돌아가는 언어 도구, 지형과 마을과 집을 자라게 하는 생성기 같은 것들입니다. 예술과 디자인에서는 선과 패턴과 색으로 작업합니다.
+
+세 작업은 서로에게서 끊임없이 빌려 옵니다. 건물은 절차적 규칙이 되고, 코드는 그림이 되고, 그림은 다시 장소가 됩니다.
+"""

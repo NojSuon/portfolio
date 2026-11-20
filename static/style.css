@@ -9,8 +9,8 @@
   --grid: rgb(21 21 21 / 0.035);
   --accent: #e3401b;
   --plate-bg: #ecebe5;
-  --sans: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --sans: "Inter Tight", "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, "Noto Sans KR", monospace;
   --pad: clamp(16px, 3vw, 40px);
   --gap: clamp(16px, 2vw, 24px);
   color-scheme: light;
@@ -81,6 +81,20 @@ a { color: inherit; }
 .bar-end { justify-self: end; display: flex; align-items: center; gap: 20px; }
 .coords { color: var(--mute); font-variant-numeric: tabular-nums; white-space: pre; }
 @media (hover: none) { .coords { display: none; } }
+
+.langs { display: flex; gap: 2px; }
+.langs a {
+  padding: 6px 5px;
+  color: var(--mute);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.langs a:hover { color: var(--ink); }
+.langs a[aria-current] { color: var(--ink); border-bottom-color: var(--accent); }
+
+/* Korean: keep words whole when lines wrap. */
+:lang(ko) { word-break: keep-all; overflow-wrap: anywhere; }
+:lang(ko) .statement, :lang(ko) .sheet-head h1 { letter-spacing: -0.02em; line-height: 1.15; }
 
 .theme-toggle {
   padding: 6px 10px;
@@ -384,6 +398,11 @@ a.row:hover .code { color: var(--accent); }
 }
 
 @media (max-width: 640px) {
+  .bar { gap: 10px; }
+  .bar-end { gap: 8px; }
+  .disciplines { gap: 12px; }
+  .langs a { padding: 6px 3px; }
+  .theme-toggle { padding: 6px 6px; }
   .row { grid-template-columns: 3.75rem minmax(0, 1fr) auto; row-gap: 2px; }
   .row .kind { grid-column: 2 / 3; grid-row: 2; font-size: 14px; }
   .row .year { grid-row: 1; grid-column: 3; }
