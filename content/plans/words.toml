@@ -80,3 +80,4 @@
 "net" = { es = "útil", ko = "전용" }
 "Up" = { es = "Sube", ko = "UP" }
 "Dn" = { es = "Baja", ko = "DN" }
+"Dimensions in metres" = { es = "Acot. en metros", ko = "치수 단위 m" }

@@ -518,7 +518,7 @@ const WORDS: &str = "content/plans/words.toml";
 
 /// Words the drawing and schedule use themselves, besides the plans' names.
 #[cfg(test)]
-const UI_WORDS: [&str; 15] = [
+const UI_WORDS: [&str; 16] = [
     "Floor plan",
     "Room schedule",
     "Level",
@@ -534,6 +534,7 @@ const UI_WORDS: [&str; 15] = [
     "net",
     "Up",
     "Dn",
+    "Dimensions in metres",
 ];
 
 /// English words of the plans → their translations, from `words.toml`:
@@ -638,7 +639,7 @@ fn esc(s: &str) -> String {
 }
 
 fn area_text(a: f64) -> String {
-    format!("{a:.1}\u{a0}m²")
+    format!("{a:.2}\u{a0}m²")
 }
 
 /// Millimetre coordinates → SVG pixels for one level.
@@ -697,9 +698,9 @@ fn render(plan: &Plan, id: &str, d: &Dict) -> Result<Drawing, String> {
     );
 
     let mut x0 = LEFT;
-    for lv in &levels {
+    for (n, lv) in levels.iter().enumerate() {
         let pen = Pen { s, ox: x0 - lv.bb[0] * s, oy: TOP - lv.bb[1] * s, k };
-        draw_level(&mut o, plan, lv, &pen, id, d);
+        draw_level(&mut o, plan, lv, &pen, id, d, n + 1);
         x0 += lv.w() * s + GAP;
     }
     north_arrow(&mut o, WIDTH - 34.0, 40.0);
@@ -713,7 +714,7 @@ fn render(plan: &Plan, id: &str, d: &Dict) -> Result<Drawing, String> {
         let mut agg: BTreeMap<(String, i64), (usize, f64, bool, usize)> = BTreeMap::new();
         for (i, r) in lv.it.rooms.iter().filter(|r| r.list).enumerate() {
             let a = r.area();
-            let e = agg.entry((r.kind.clone().unwrap_or_else(|| r.key()), (a * 10.0).round() as i64)).or_insert((0, a, r.outdoor, i));
+            let e = agg.entry((r.kind.clone().unwrap_or_else(|| r.key()), (a * 100.0).round() as i64)).or_insert((0, a, r.outdoor, i));
             e.0 += 1;
         }
         let mut list: Vec<_> = agg.into_iter().collect();
@@ -753,14 +754,15 @@ fn render(plan: &Plan, id: &str, d: &Dict) -> Result<Drawing, String> {
     let fp = &levels[0];
     facts.push((
         d.t("Footprint"),
-        format!("{:.1} × {:.1} m", fp.w() / 1000.0, fp.h() / 1000.0),
+        format!("{:.2} × {:.2} m", fp.w() / 1000.0, fp.h() / 1000.0),
     ));
     facts.push((d.t("Net area"), area_text(total)));
 
     Ok(Drawing { svg: o, schedule, facts })
 }
 
-fn draw_level(o: &mut String, plan: &Plan, lv: &Lv, p: &Pen, id: &str, d: &Dict) {
+#[allow(clippy::too_many_arguments)]
+fn draw_level(o: &mut String, plan: &Plan, lv: &Lv, p: &Pen, id: &str, d: &Dict, number: usize) {
     let it = &lv.it;
     let k = p.k;
     let (bx0, by0, bx1, by1) = (p.x(lv.bb[0]), p.y(lv.bb[1]), p.x(lv.bb[2]), p.y(lv.bb[3]));
@@ -795,24 +797,27 @@ fn draw_level(o: &mut String, plan: &Plan, lv: &Lv, p: &Pen, id: &str, d: &Dict)
         }
     }
 
-    // Walls: solid poché, one line per segment.
-    o.push_str(r#"<g class="w">"#);
-    for sg in &lv.segs {
-        let _ = write!(
-            o,
-            r#"<line x1="{:.1}" y1="{:.1}" x2="{:.1}" y2="{:.1}" stroke-width="{:.2}"/>"#,
-            p.x(sg.a[0]),
-            p.y(sg.a[1]),
-            p.x(sg.b[0]),
-            p.y(sg.b[1]),
-            p.l(sg.t)
-        );
+    // Walls in section: a Chak outline (A-WALL) under K'ak' poché
+    // (A-WALL-PATT). Each layer is drawn whole, so junctions merge.
+    for (class, grow) in [("w wo", 1.3), ("w wi", -1.3)] {
+        let _ = write!(o, r#"<g class="{class}">"#);
+        for sg in &lv.segs {
+            let _ = write!(
+                o,
+                r#"<line x1="{:.1}" y1="{:.1}" x2="{:.1}" y2="{:.1}" stroke-width="{:.2}"/>"#,
+                p.x(sg.a[0]),
+                p.y(sg.a[1]),
+                p.x(sg.b[0]),
+                p.y(sg.b[1]),
+                (p.l(sg.t) + grow).max(0.6)
+            );
+        }
+        o.push_str("</g>");
     }
     for c in &it.columns {
         let h = p.l(plan.column);
         let _ = write!(o, r#"<rect class="col" x="{:.1}" y="{:.1}" width="{h:.1}" height="{h:.1}"/>"#, p.x(c[0]) - h / 2.0, p.y(c[1]) - h / 2.0);
     }
-    o.push_str("</g>");
 
     // Openings.
     for d in &it.doors {
@@ -932,15 +937,21 @@ fn draw_level(o: &mut String, plan: &Plan, lv: &Lv, p: &Pen, id: &str, d: &Dict)
 
     // Level title.
     let ty = by1 + if lv.src.grid.is_some() { 66.0 } else { 44.0 };
+    let tx = bx0 + 22.0;
     let _ = write!(
         o,
-        r#"<text class="title" x="{bx0:.1}" y="{ty:.1}" font-size="11">{}</text><text class="ra" x="{bx0:.1}" y="{:.1}" font-size="8">{} {} · {} {}</text>"#,
+        r#"<circle class="tagc" cx="{:.1}" cy="{:.1}" r="9"/><text class="tagn" x="{:.1}" y="{:.1}" text-anchor="middle" font-size="9">{number}</text><text class="title" x="{tx:.1}" y="{ty:.1}" font-size="11">{}</text><text class="ra" x="{tx:.1}" y="{:.1}" font-size="7.5">{} {} · {} {} · {}</text>"#,
+        bx0 + 9.0,
+        ty + 1.5,
+        bx0 + 9.0,
+        ty + 4.6,
         esc(&lv.src.name.to_uppercase()),
         ty + 13.0,
         lv.it.rooms.iter().filter(|r| r.list && !r.outdoor).count(),
         esc(&d.t("rooms").to_uppercase()),
         esc(&d.t("net").to_uppercase()),
-        area_text(lv.area()).to_uppercase()
+        area_text(lv.area()).to_uppercase(),
+        esc(&d.t("Dimensions in metres").to_uppercase())
     );
 }
 
@@ -973,7 +984,7 @@ fn dim(o: &mut String, x1: f64, y1: f64, x2: f64, y2: f64, mm: f64, vertical: bo
         }
     }
     o.push_str("</g>");
-    let label = crate::plate::mm(mm.round().max(0.0) as u32);
+    let label = format!("{:.2}", mm.max(0.0) / 1000.0);
     let fs = 6.6 * k.min(1.3);
     if vertical {
         let (x, y) = (x1 - 4.0, (y1 + y2) / 2.0);
@@ -1127,7 +1138,7 @@ fn stair(o: &mut String, p: &Pen, st: &Stair) {
         arrowhead(&mut g, 0.0, y1, 0.0, -1.0);
         (0.0, y0 + 8.0)
     };
-    let _ = write!(o, r#"<g class="fx" transform="translate({cx:.1} {cy:.1}) rotate({ang})">{g}</g>"#);
+    let _ = write!(o, r#"<g class="st" transform="translate({cx:.1} {cy:.1}) rotate({ang})">{g}</g>"#);
     let (sa, ca) = (ang.to_radians().sin(), ang.to_radians().cos());
     let (lx, ly) = (cx + start.0 * ca - start.1 * sa, cy + start.0 * sa + start.1 * ca);
     let label = st.label.as_deref().unwrap_or("Up");
@@ -1309,19 +1320,31 @@ fn symbol(o: &mut String, kind: &str, w: f64, h: f64, s: f64, seats: Option<u32>
     }
 }
 
+/// North: La Flama, the flame from the studio's symbol, pointing north.
 fn north_arrow(o: &mut String, x: f64, y: f64) {
+    // Drawn in a 40 × 32 box centred on (x, y), its point at the top.
+    let pts = [
+        (17.0, 0.0),
+        (23.0, 0.0),
+        (25.5, 10.5),
+        (39.0, 21.0),
+        (40.0, 30.5),
+        (33.5, 31.5),
+        (20.0, 21.5),
+        (6.5, 31.5),
+        (0.0, 30.5),
+        (1.0, 21.0),
+        (14.5, 10.5),
+    ];
+    let scale = 0.62;
+    let mut d = String::new();
+    for (i, (px, py)) in pts.iter().enumerate() {
+        let _ = write!(d, "{}{:.1} {:.1}", if i == 0 { "M" } else { "L" }, x + (px - 20.0) * scale, y + (py - 16.0) * scale);
+    }
     let _ = write!(
         o,
-        r#"<g class="na"><circle class="th" cx="{x:.1}" cy="{y:.1}" r="15"/><path class="acf" d="M{x:.1} {:.1}L{:.1} {:.1}L{x:.1} {:.1}Z"/><path class="th" d="M{x:.1} {:.1}L{:.1} {:.1}L{x:.1} {:.1}Z"/><text class="gt" x="{x:.1}" y="{:.1}" text-anchor="middle" font-size="8">N</text></g>"#,
-        y - 13.0,
-        x + 6.0,
-        y + 8.0,
-        y + 3.0,
-        y - 13.0,
-        x - 6.0,
-        y + 8.0,
-        y + 3.0,
-        y - 19.0
+        r#"<g class="na"><path class="flama" d="{d}Z"/><text class="gt" x="{x:.1}" y="{:.1}" text-anchor="middle" font-size="8">N</text></g>"#,
+        y - 16.0 * scale - 5.0
     );
 }
 

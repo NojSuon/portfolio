@@ -77,7 +77,7 @@ impl Lang {
 
 /// Fixed words of the page frame.
 struct Ui {
-    disciplines: [&'static str; 4],
+    disciplines: [&'static str; 3],
     index: &'static str,
     index_of_drawings: &'static str,
     in_preparation: &'static str,
@@ -106,7 +106,7 @@ struct Ui {
 }
 
 const UI_ES: Ui = Ui {
-    disciplines: ["Arquitectura", "Plantas", "Herramientas y software", "Arte y diseño"],
+    disciplines: ["Arquitectura", "Herramientas y software", "Arte y diseño"],
     index: "Índice",
     index_of_drawings: "Índice de planos",
     in_preparation: "En preparación",
@@ -135,7 +135,7 @@ const UI_ES: Ui = Ui {
 };
 
 const UI_EN: Ui = Ui {
-    disciplines: ["Architecture", "Floor Plans", "Tools & Software", "Arts & Design"],
+    disciplines: ["Architecture", "Tools & Software", "Arts & Design"],
     index: "Index",
     index_of_drawings: "Index of drawings",
     in_preparation: "In preparation",
@@ -164,7 +164,7 @@ const UI_EN: Ui = Ui {
 };
 
 const UI_KO: Ui = Ui {
-    disciplines: ["건축", "평면도", "도구와 소프트웨어", "예술과 디자인"],
+    disciplines: ["건축", "도구와 소프트웨어", "예술과 디자인"],
     index: "목차",
     index_of_drawings: "도면 목록",
     in_preparation: "준비 중",
@@ -262,18 +262,16 @@ struct Link {
 #[serde(rename_all = "lowercase")]
 enum Discipline {
     Architecture,
-    Plans,
     Tools,
     Art,
 }
 
 impl Discipline {
-    const ALL: [Discipline; 4] = [Discipline::Architecture, Discipline::Plans, Discipline::Tools, Discipline::Art];
+    const ALL: [Discipline; 3] = [Discipline::Architecture, Discipline::Tools, Discipline::Art];
 
     fn letter(self) -> &'static str {
         match self {
             Discipline::Architecture => "A",
-            Discipline::Plans => "F",
             Discipline::Tools => "T",
             Discipline::Art => "D",
         }
@@ -286,7 +284,6 @@ impl Discipline {
     fn id(self) -> &'static str {
         match self {
             Discipline::Architecture => "architecture",
-            Discipline::Plans => "plans",
             Discipline::Tools => "tools",
             Discipline::Art => "art",
         }
@@ -510,7 +507,7 @@ fn page(site: &Site, here: &Here, title: &str, description: &str, sheet_code: &s
   <script>try {{ if (localStorage.getItem("theme") === "blueprint") document.documentElement.dataset.theme = "blueprint"; }} catch (e) {{}}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter+Tight:wght@300;400;500{korean}&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter+Tight:wght@300;400;500{korean}&display=swap">
   <link rel="stylesheet" href="{assets}style.css">
   <script src="{assets}main.js" defer></script>
 </head>

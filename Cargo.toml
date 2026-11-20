@@ -2,7 +2,7 @@
 name = "portfolio"
 version = "0.1.0"
 edition = "2024"
-description = "Builds Noj Suon's portfolio site: content/*.toml + static/ → dist/"
+description = "Builds Fabrizio Vásquez's portfolio site: content/*.toml + static/ → dist/"
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
