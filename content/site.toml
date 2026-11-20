@@ -4,7 +4,7 @@
 # language: { es = "…", en = "…", ko = "…" }. Spanish is the main language
 # (the site root); English is at en/ and Korean at ko/.
 
-name = "Noj Suon"
+name = "Fabrizio Vásquez"
 
 role = { es = "Arquitectura · Software · Arte y diseño", en = "Architecture · Software · Art & Design", ko = "건축 · 소프트웨어 · 예술과 디자인" }
 

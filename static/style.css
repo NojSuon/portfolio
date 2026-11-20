@@ -1,4 +1,4 @@
-/* Noj Suon — portfolio as a set of drawing sheets.
+/* Fabrizio Vásquez — portfolio as a set of drawing sheets.
    Paper (default) and Blueprint themes; one redline accent. */
 
 :root {
@@ -245,31 +245,53 @@ a.row:hover .code { color: var(--accent); }
 .plate .acc { stroke: var(--accent); }
 .plate text { font-family: var(--mono); font-size: 9px; letter-spacing: 0.04em; fill: currentColor; stroke: none; }
 
-/* ── Floor plans (src/floorplan.rs) ──────────────────────────────────────── */
+/* ── Floor plans (src/floorplan.rs) ──────────────────────────────────────────
+   Drawn to the Studio K'ak' CAD standard, "planos en naranja": white paper,
+   cut walls in Chak with K'ak' poché, furniture in K'ak', grid and floors in
+   Brasa, text in Carbón. Room names in Archivo, areas in IBM Plex Mono. The
+   paper stays white in both themes. */
 
-.plan .w { stroke-linecap: square; }
-.plan .w .col { fill: currentColor; stroke: none; }
-.plan .cut { fill: var(--plate-bg); stroke: none; }
-.plan .f { fill: var(--plate-bg); stroke-width: 0.7; }
+.plan {
+  --paper: #ffffff;
+  --chak: #b5461c;
+  --kak: #f2703a;
+  --brasa: #ffa46f;
+  --carbon: #1c1917;
+  --archivo: "Archivo", "Noto Sans KR", system-ui, sans-serif;
+  color: var(--chak);
+}
+.plan .wo { stroke: var(--chak); stroke-linecap: square; }
+.plan .wi { stroke: var(--kak); stroke-linecap: square; }
+.plan .col { fill: var(--chak); stroke: none; }
+.plan .cut { fill: var(--paper); stroke: none; }
+.plan .f { fill: var(--paper); stroke-width: 0.6; }
+.plan .fx { color: var(--kak); }
+.plan .st { color: var(--chak); }
 .plan .th { stroke-width: 0.5; }
-.plan .fl { stroke-width: 0.4; opacity: 0.28; }
+.plan .fl { stroke: var(--brasa); stroke-width: 0.45; opacity: 0.7; }
 .plan .gl { stroke-width: 0.6; }
 .plan .leaf { stroke-width: 1.1; }
 .plan .arc { stroke-width: 0.45; stroke-dasharray: 2 2; }
 .plan .hid { stroke-width: 0.45; stroke-dasharray: 3 2; }
 .plan .canopy { stroke-width: 0.6; stroke-dasharray: 4 2; }
-.plan .gd { stroke-width: 0.5; stroke-dasharray: 10 3 2 3; opacity: 0.55; }
+.plan .gd { stroke: var(--brasa); stroke-width: 0.6; stroke-dasharray: 10 3 2 3; }
 .plan .dm { stroke-width: 0.5; }
 .plan .inkf { fill: currentColor; stroke: none; }
 .plan .sb .inkf { stroke: currentColor; }
-.plan .acf { fill: var(--accent); stroke: none; }
-.plan text { stroke: none; fill: currentColor; font-family: var(--mono); letter-spacing: 0.04em; }
-.plan .rn { font-family: var(--sans); font-weight: 500; letter-spacing: 0.07em; }
-.plan .ra, .plan .note { fill: var(--mute); }
-.plan .tag { fill: var(--accent); letter-spacing: 0.1em; }
-.plan .title { font-family: var(--sans); font-weight: 500; letter-spacing: 0.08em; }
-.plan .lbl { paint-order: stroke; stroke: var(--plate-bg); stroke-width: 3px; stroke-linejoin: round; }
+.plan .acf, .plan .flama, .plan .tagc { fill: var(--kak); stroke: none; }
+.plan text { stroke: none; fill: var(--carbon); font-family: var(--mono); letter-spacing: 0.04em; }
+.plan .rn { font-family: var(--archivo); font-weight: 600; letter-spacing: 0.06em; }
+.plan .ra { fill: var(--chak); }
+.plan .dt { font-family: var(--archivo); fill: var(--chak); letter-spacing: 0.02em; }
+.plan .note { fill: var(--chak); }
+.plan .gt { fill: var(--chak); font-weight: 500; }
+.plan .tag { fill: var(--kak); letter-spacing: 0.1em; font-weight: 500; }
+.plan .tagn { fill: var(--paper); font-weight: 500; }
+.plan .title { font-family: var(--archivo); font-weight: 700; letter-spacing: 0.06em; }
+.plan .lbl { paint-order: stroke; stroke: var(--paper); stroke-width: 3px; stroke-linejoin: round; }
 #preview .plan { width: 100%; height: 100%; }
+#preview:has(.plan), .fig.plan-fig { background: #ffffff; }
+.fig.plan-fig figcaption { background: var(--plate-bg); }
 
 .fig.plan-fig { overflow-x: auto; }
 .fig.plan-fig .plan { min-width: 640px; }

@@ -1,4 +1,4 @@
-# Noj Suon · Portfolio
+# Fabrizio Vásquez · Portfolio
 
 Personal portfolio for architecture, tools & software, and arts & design, laid out as a set of drawing sheets. Live at https://nojsuon.github.io/portfolio/.
 
